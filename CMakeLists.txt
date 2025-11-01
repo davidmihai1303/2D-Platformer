@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing executable name in this file
 # for now, the project name is used as the executable name
-set(MAIN_PROJECT_NAME "oop")
+set(MAIN_PROJECT_NAME "SoundFugue")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}")
 
 
@@ -57,7 +57,13 @@ endif()
 
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
-    main.cpp
+        src/main.cpp
+        src/player.cpp
+        src/player.hpp
+        src/game.cpp
+        src/game.hpp
+        src/World.cpp
+        src/World.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
