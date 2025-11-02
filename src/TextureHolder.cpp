@@ -34,5 +34,3 @@ const sf::Texture &TextureHolder::get() const {
     }
     return *m_texture;
 }
-
-}
