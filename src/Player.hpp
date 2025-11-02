@@ -21,8 +21,14 @@ public:
 
     void setPlayerPosition(sf::Vector2f position);
 
+    void setVelocityY(float y);
+
+    void setOnGround(bool value);
+
 private:
     sf::RectangleShape m_shape;
+    sf::Vector2f m_velocity;
+    bool m_onGround = false;
 };
 
 

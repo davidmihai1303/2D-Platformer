@@ -6,6 +6,7 @@
 #define SOUNDFUGUE_WORLD_HPP
 #include <SFML/Graphics.hpp>
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 class World {
 public:
@@ -13,14 +14,15 @@ public:
 
     void update(sf::Time dt);
 
-    void draw();
+    void draw() const;
 
 private:
     void handleCollisions();
 
     sf::RenderWindow &m_window;
-    Player m_player;
     sf::RectangleShape m_ground;
+    Player m_player;
+    Enemy m_enemy;
 };
 
 #endif //SOUNDFUGUE_WORLD_HPP

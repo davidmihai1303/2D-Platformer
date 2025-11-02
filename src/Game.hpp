@@ -16,8 +16,6 @@ public:
 private:
     void processEvents();
 
-    void render();
-
     sf::RenderWindow m_window;
     World m_world;
 };
