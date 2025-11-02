@@ -9,18 +9,18 @@
 
 class TextureHolder {
 public:
-    explicit TextureHolder(const std::string& path);
+    explicit TextureHolder(const std::string &path);
 
-    TextureHolder(const TextureHolder& other);
+    TextureHolder(const TextureHolder &other);
 
-    TextureHolder& operator=(const TextureHolder& other);
+    TextureHolder &operator=(const TextureHolder &other);
 
     ~TextureHolder();
 
-    const sf::Texture& get() const { return *m_texture; }
+    const sf::Texture &get() const;
 
 private:
-    sf::Texture* m_texture;
+    sf::Texture *m_texture;
 };
 
 #endif //SOUNDFUGUE_TEXTUREHOLDER_HPP
