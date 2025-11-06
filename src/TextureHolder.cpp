@@ -12,18 +12,6 @@ TextureHolder::TextureHolder(const std::string &path) {
     }
 }
 
-TextureHolder::TextureHolder(const TextureHolder &other) {
-    m_texture = new sf::Texture(*other.m_texture);
-}
-
-TextureHolder &TextureHolder::operator=(const TextureHolder &other) {
-    if (this != &other) {
-        delete m_texture;
-        m_texture = new sf::Texture(*other.m_texture);
-    }
-    return *this;
-}
-
 TextureHolder::~TextureHolder() {
     delete m_texture;
 }

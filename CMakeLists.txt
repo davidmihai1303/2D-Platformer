@@ -68,6 +68,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Enemy.hpp
         src/TextureHolder.cpp
         src/TextureHolder.hpp
+        src/Entity.cpp
+        src/Entity.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

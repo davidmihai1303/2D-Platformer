@@ -28,28 +28,30 @@ void Player::update(const sf::Time dt) {
 
     // Move horizontally and vertically
     m_shape.move((movement + m_velocity) * dt.asSeconds());
+
+    //TODO ??
+    m_position = m_shape.getPosition();
 }
 
 void Player::draw(sf::RenderTarget &target) const {
     target.draw(m_shape);
 }
 
-sf::FloatRect Player::getPlayerBounds() const {
+sf::FloatRect Player::getBounds() const {
     return m_shape.getGlobalBounds();
-}
-
-void Player::setPlayerPosition(const sf::Vector2f position) {
-    m_shape.setPosition(position);
 }
 
 sf::FloatRect Player::getPlayerDimensions() const {
     return m_shape.getLocalBounds();
 }
 
+void Player::setPosition(const sf::Vector2f &position) {
+    m_shape.setPosition(position);
+}
+
 void Player::setVelocityY(const float y) {
     m_velocity.y = y;
 }
-
 
 void Player::setOnGround(const bool value) {
     m_onGround = value;

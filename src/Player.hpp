@@ -6,20 +6,22 @@
 #define SOUNDFUGUE_PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
+#include "Entity.hpp"
 
-class Player {
+class Player final : public Entity{
 public:
     Player();
 
-    void update(sf::Time dt);
+    void update(sf::Time dt) override;
 
-    void draw(sf::RenderTarget &target) const;
+    void draw(sf::RenderTarget &target) const override;
 
-    sf::FloatRect getPlayerBounds() const;
+    sf::FloatRect getBounds() const override;
 
+    //TODO ??
     sf::FloatRect getPlayerDimensions() const;
 
-    void setPlayerPosition(sf::Vector2f position);
+    void setPosition(const sf::Vector2f &position) override;
 
     void setVelocityY(float y);
 
@@ -27,7 +29,6 @@ public:
 
 private:
     sf::RectangleShape m_shape;
-    sf::Vector2f m_velocity;
     bool m_onGround = false;
 };
 

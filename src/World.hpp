@@ -5,8 +5,10 @@
 #ifndef SOUNDFUGUE_WORLD_HPP
 #define SOUNDFUGUE_WORLD_HPP
 #include <SFML/Graphics.hpp>
+#include <vector>
 #include "Player.hpp"
 #include "Enemy.hpp"
+#include "Entity.hpp"
 
 class World {
 public:
@@ -16,13 +18,18 @@ public:
 
     void draw() const;
 
+    sf::Vector2f getPlayerPosition() const;
+
 private:
     void handleCollisions();
 
     sf::RenderWindow &m_window;
+
     sf::RectangleShape m_ground;
-    Player m_player;
-    Enemy m_enemy;
+
+    std::vector<std::unique_ptr<Entity>> m_entities;
+
+    Player* m_player = nullptr;
 };
 
 #endif //SOUNDFUGUE_WORLD_HPP

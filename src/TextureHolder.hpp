@@ -11,13 +11,10 @@ class TextureHolder {
 public:
     explicit TextureHolder(const std::string &path);
 
-    TextureHolder(const TextureHolder &other);
-
-    TextureHolder &operator=(const TextureHolder &other);
-
     ~TextureHolder();
 
-    const sf::Texture &get() const;
+    // We use reference to avoid making a copy of the large texture object
+    [[nodiscard]] const sf::Texture &get() const;
 
 private:
     sf::Texture *m_texture;

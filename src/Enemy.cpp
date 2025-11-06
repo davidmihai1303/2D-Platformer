@@ -4,10 +4,11 @@
 
 #include "Enemy.hpp"
 
-Enemy::Enemy(const sf::Vector2f& position, const sf::Vector2f& size) : m_velocity(sf::Vector2f(100.f, 0.f)) {
+Enemy::Enemy(const sf::Vector2f &position, const sf::Vector2f &size) {
     m_shape.setSize(size);
     m_shape.setFillColor(sf::Color::Red);
     m_shape.setPosition(position);
+    m_velocity = (sf::Vector2f(100.f, 0.f));
 
     m_leftLimit = position.x - 100.f;
     m_rightLimit = position.x + 100.f;
@@ -25,10 +26,14 @@ void Enemy::update(const sf::Time dt) {
     }
 }
 
-void Enemy::draw(sf::RenderTarget& target) const {
+void Enemy::draw(sf::RenderTarget &target) const {
     target.draw(m_shape);
 }
 
-sf::FloatRect Enemy::getEnemyBounds() const {
+void Enemy::setPosition(const sf::Vector2f &position) {
+    m_shape.setPosition(position);
+}
+
+sf::FloatRect Enemy::getBounds() const {
     return m_shape.getGlobalBounds();
 };
