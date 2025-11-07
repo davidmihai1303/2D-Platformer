@@ -5,22 +5,22 @@
 #include "Player.hpp"
 #include <iostream>
 
-Player::Player() {
+Player::Player() : m_isRunning(false), m_onGround(false), m_lastFacingDirection(true) {
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
     m_shape.setPosition({0.f, 450.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
-    m_lastFacingDirection = m_currentFacingDirection;
 }
 
 void Player::update(const sf::Time dt) {
-
     movementLogic(dt);
 
     attackingLogic();
 
 
-    std::cout << m_velocity.x << " " << m_velocity.y <<'\n';
+    std::cout << m_movement.x << "    " << m_movement.y << "         ";
+    //std::cout << m_velocity.x << " " << m_velocity.y << '\n';
+    std::cout << m_isRunning << '\n';
 
 
     // To have access to the player's position at all times without auxiliary func
@@ -32,13 +32,13 @@ void Player::movementLogic(const sf::Time dt) {
     constexpr float gravity = 2000.f;
 
     // Left-Right movement
-    sf::Vector2f movement(0.f, 0.f);
+    m_movement = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
-        movement.x -= moveSpeed;
+        m_movement.x -= moveSpeed;
         m_currentFacingDirection = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
-        movement.x += moveSpeed;
+        m_movement.x += moveSpeed;
         m_currentFacingDirection = true;
     }
 
@@ -47,23 +47,30 @@ void Player::movementLogic(const sf::Time dt) {
         constexpr float jumpStrength = 550.f;
         m_velocity.y = -jumpStrength;
         m_onGround = false;
+        // Stop attacking only when jump begins
+        if (m_isAttacking) {
+            m_isAttacking = false;
+            m_activeAttackClock.reset();
+        }
     }
     m_velocity.y += gravity * dt.asSeconds();
 
     // Running Logic
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift))
-        movement.x *= 1.71f; //TODO experiment with other values
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift)) {
+        m_movement.x *= 1.71f; //TODO experiment with other values
+    }
+
+    if (m_isAttacking && !m_isRunning)
+        m_movement.x = 0.f; // If you attack while moving (but not running) you stop
 
     // Move horizontally and vertically
-    m_shape.move((movement + m_velocity) * dt.asSeconds());
+    m_shape.move((m_movement + m_velocity) * dt.asSeconds());
 }
 
 void Player::attackingLogic() {
     // Reset the attack cooldown
     if (m_cooldownAttackClock.getElapsedTime() >= m_cooldownAttackTime)
         m_cooldownAttackClock.reset();
-
     // Reset the active attack
     if (m_activeAttackClock.getElapsedTime() >= m_activeAttackTime) {
         m_activeAttackClock.reset();
@@ -78,6 +85,15 @@ void Player::attackingLogic() {
         }
     }
     m_lastFacingDirection = m_currentFacingDirection; // update for next frame
+
+    // Stop attacking if player moves
+    if (m_movement.x != 0.f && m_isAttacking == true)
+        m_isAttacking = false;
+
+    // Handle running and attacking
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) ||
+        sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift)) {
+    }
 
     // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area
@@ -98,10 +114,10 @@ void Player::attack() {
     // if cooldown has passed
     if (m_cooldownAttackClock.getElapsedTime() == sf::Time::Zero && m_activeAttackClock.getElapsedTime() <=
         m_activeAttackTime) {
+        m_isAttacking = true;
         m_cooldownAttackClock.start();
         // Using restart() to be able to spam-attack
         m_activeAttackClock.restart();
-        m_isAttacking = true;
     }
 }
 

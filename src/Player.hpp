@@ -31,13 +31,15 @@ public:
     sf::FloatRect getAttackingBounds() const;
 
 private:
-    bool m_onGround = false;
+    sf::Vector2f m_movement;
+
+    bool m_isRunning;
+    bool m_onGround;
     sf::Time m_cooldownAttackTime = sf::seconds(0.5f);
     sf::Time m_activeAttackTime = sf::seconds(1.f); //TODO not sure
 
     // Code=1
     sf::RectangleShape attackingShape;
-
     bool m_lastFacingDirection;
 
 };
