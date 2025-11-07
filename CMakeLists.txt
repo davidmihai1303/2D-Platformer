@@ -70,6 +70,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/TextureHolder.hpp
         src/Entity.cpp
         src/Entity.hpp
+        src/Note.cpp
+        src/Note.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

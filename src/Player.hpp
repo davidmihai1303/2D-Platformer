@@ -8,7 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
-class Player final : public Entity{
+class Player final : public Entity {
 public:
     Player();
 
@@ -23,13 +23,21 @@ public:
 
     void setPosition(const sf::Vector2f &position) override;
 
-    void setVelocityY(float y);
-
     void setOnGround(bool value);
+
+    void attack();
+
+    // Code=1
+    sf::FloatRect getAttackingBounds() const;
 
 private:
     sf::RectangleShape m_shape;
     bool m_onGround = false;
+    sf::Time m_cooldownAttackTime = sf::seconds(0.5f);
+    sf::Time m_activeAttackTime = sf::seconds(1.f); //TODO not sure
+
+    // Code=1
+    sf::RectangleShape attackingShape;
 };
 
 

@@ -22,16 +22,7 @@ void Game::run() {
 
         processEvents();
         m_world.update(dt);
-
-        // Set the camera to follow the player
-        // m_view.setCenter(m_world.getPlayerPosition());
-
-        // Camera follows the player, but with added delay to make it more fluid
-        const sf::Vector2f currentCenter = m_view.getCenter();
-        const sf::Vector2f target = m_world.getPlayerPosition();
-        constexpr float smoothing = 0.04f; // between 0 and 1, (experimenting with values between 0.01 and 0.1)
-        m_view.setCenter(currentCenter + (target - currentCenter) * smoothing);
-        //TODO - make it frame rate independent
+        updateCamera();
 
         m_window.setView(m_view);
 
@@ -48,6 +39,9 @@ void Game::processEvents() {
             m_window.close();
         } else if (auto *resize = event->getIf<sf::Event::Resized>()) {
             updateView(static_cast<float>(resize->size.x), static_cast<float>(resize->size.y));
+        } else if (auto *button = event->getIf<sf::Event::MouseButtonPressed>()) {
+            if (button->button == sf::Mouse::Button::Left)
+                m_world.playerAttack(); // triggers once
         }
     }
 }
@@ -76,4 +70,13 @@ void Game::updateView(const float x, const float y) {
     m_view.setSize({1920.f, 1080.f});
     m_view.setViewport(sf::FloatRect({posX, posY}, {sizeX, sizeY}));
     m_window.setView(m_view);
+}
+
+void Game::updateCamera() {
+    // Camera follows the player, but with added delay to make it more fluid
+    const sf::Vector2f currentCenter = m_view.getCenter();
+    const sf::Vector2f target = m_world.getPlayerPosition();
+    constexpr float smoothing = 0.04f; // between 0 and 1, (experimenting with values between 0.01 and 0.1)
+    m_view.setCenter(currentCenter + (target - currentCenter) * smoothing);
+    //TODO - make it frame rate independent
 }

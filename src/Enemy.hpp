@@ -20,6 +20,8 @@ public:
 
     sf::FloatRect getBounds() const override;
 
+    void setColor(sf::Color colour);
+
 private:
     sf::RectangleShape m_shape;
     float m_leftLimit;

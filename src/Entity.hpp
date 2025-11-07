@@ -17,20 +17,31 @@ public:
 
     virtual void draw(sf::RenderTarget &target) const = 0;
 
-    virtual sf::FloatRect getBounds() const = 0;
+    [[nodiscard]] virtual sf::FloatRect getBounds() const = 0;
 
     // Position and velocity helpers
-    virtual sf::Vector2f getPosition() const;
+    [[nodiscard]] virtual sf::Vector2f getPosition() const;
 
     virtual void setPosition(const sf::Vector2f &position) = 0;
 
-    sf::Vector2f getVelocity() const;
+    [[nodiscard]] bool getAttackingState() const;
+
+    void setAttackingState(bool state);
+
+    [[nodiscard]] sf::Vector2f getVelocity() const;
 
     void setVelocity(const sf::Vector2f &velocity);
+
 
 protected:
     sf::Vector2f m_position;
     sf::Vector2f m_velocity;
+
+    // Attack logic
+    bool m_isAttacking = false;
+    sf::Clock m_activeAttackClock;
+    sf::Clock m_cooldownAttackClock;
+
 };
 
 

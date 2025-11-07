@@ -18,6 +18,8 @@ private:
 
     void updateView(float x, float y);
 
+    void updateCamera();
+
     sf::RenderWindow m_window;
     sf::View m_view;
     World m_world;

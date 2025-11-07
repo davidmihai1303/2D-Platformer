@@ -10,6 +10,7 @@ Enemy::Enemy(const sf::Vector2f &position, const sf::Vector2f &size) {
     m_shape.setPosition(position);
     m_velocity = (sf::Vector2f(100.f, 0.f));
 
+    // Set limits to which it moves
     m_leftLimit = position.x - 100.f;
     m_rightLimit = position.x + 100.f;
 }
@@ -24,6 +25,8 @@ void Enemy::update(const sf::Time dt) {
         m_shape.setPosition({m_rightLimit - m_shape.getSize().x, m_shape.getPosition().y});
         m_velocity.x = -std::abs(m_velocity.x);
     }
+    // To have access to the enemy's position at all times without auxiliary func
+    m_position = m_shape.getPosition();
 }
 
 void Enemy::draw(sf::RenderTarget &target) const {
@@ -37,3 +40,7 @@ void Enemy::setPosition(const sf::Vector2f &position) {
 sf::FloatRect Enemy::getBounds() const {
     return m_shape.getGlobalBounds();
 };
+
+void Enemy::setColor(sf::Color colour) {
+    m_shape.setFillColor(colour);
+}

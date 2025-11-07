@@ -1,16 +1,14 @@
 //
 // Created by david on 11/1/2025.
 //
-#include <iostream>
 #include <algorithm>
 #include "World.hpp"
 
-World::World(sf::RenderWindow &window)
-    : m_window(window) {
+World::World(sf::RenderWindow &window) : m_window(window) {
     // Create player
     auto player = std::make_unique<Player>();
     m_entities.push_back(std::make_unique<Player>());
-    m_player = static_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
+    m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
 
     // Create an enemy
     auto enemy = std::make_unique<Enemy>(sf::Vector2f{400.f, 500.f}, sf::Vector2f{50.f, 50.f});
@@ -22,11 +20,14 @@ World::World(sf::RenderWindow &window)
     m_ground.setSize({3000.f, 50.f});
     m_ground.setFillColor(sf::Color(100, 60, 30));
     m_ground.setPosition({-500.f, 550.f});
+
+    // Code=2
+    addNotes();
 }
 
-void World::update(const sf::Time dt)  {
+void World::update(const sf::Time dt) {
     for (const auto &e: m_entities)
-        (*e).update(dt); // I prefer this syntax to better visualize variable type
+        (*e).update(dt);
     // It uses its own specific update func (the one with override)
 
     handleCollisions();
@@ -35,27 +36,42 @@ void World::update(const sf::Time dt)  {
 void World::draw() const {
     m_window.draw(m_ground);
 
+    // Draw all entities
     for (const auto &e: m_entities)
         (*e).draw(m_window);
+    // Draw all notes
+    for (const auto &n: m_notes)
+        (*n).draw(m_window);
 }
 
 void World::handleCollisions() {
+    sf::FloatRect playerBounds = (*m_player).getBounds();
+
+    // passed through reference to avoid creating+deleting chunks of memory repeatedly
+    collision_player_ground(playerBounds);
+    collision_player_enemies(playerBounds);
+    collision_player_notes(playerBounds);
+}
+
+void World::collision_player_ground(sf::FloatRect &playerBounds) {
     if (!m_player)
         return;
 
-    const sf::FloatRect playerBounds = (*m_player).getBounds();
-
-    // player - ground
     if (const sf::FloatRect groundBounds = m_ground.getGlobalBounds(); groundBounds.findIntersection(playerBounds)) {
         // Move player on top of ground
         (*m_player).setPosition({
             playerBounds.position.x, groundBounds.position.y - (*m_player).getPlayerDimensions().size.y
         });
         (*m_player).setOnGround(true);
-        (*m_player).setVelocityY(0.f);
+        (*m_player).setVelocity({(*m_player).getVelocity().x, 0.f});
     } else {
         (*m_player).setOnGround(false);
     }
+}
+
+void World::collision_player_enemies(sf::FloatRect &playerBounds) {
+    if (!m_player)
+        return;
 
     for (auto &e: m_entities) {
         if (e.get() == m_player)
@@ -65,15 +81,54 @@ void World::handleCollisions() {
         if (playerBounds.findIntersection(enemyBounds)) {
             // simple reaction: reset player position
             (*m_player).setPosition({100.f, 100.f});
-            (*m_player).setVelocityY(0.f);
+            (*m_player).setVelocity({(*m_player).getVelocity().x, 0.f});
+        }
+    }
+
+    // Hit logic implementation
+    if ((*m_player).getAttackingState() == true) {
+        for (auto &e: m_entities) {
+            if (e.get() == m_player)
+                continue;
+
+            const sf::FloatRect enemyBounds = (*e).getBounds();
+            if ((*m_player).getAttackingBounds().findIntersection(enemyBounds)) {
+                // simple reaction: add a filter to the enemy
+                //TODO manage enemy default color so it doesn't stay purple forever (using a Clock)
+                if (auto *enemy = dynamic_cast<Enemy *>(e.get())) {
+                    (*enemy).setColor(sf::Color(255, 120, 255, 255));
+                }
+            }
         }
     }
 }
 
+void World::collision_player_notes(sf::FloatRect &playerBounds) {
+    if (!m_player)
+        return;
+
+    // Remove the notes which the player intersects
+    std::erase_if(
+        m_notes,
+        [&](const std::unique_ptr<Note> &n) {
+            const sf::FloatRect noteBounds = (*n).getBounds();
+            return playerBounds.findIntersection(noteBounds).has_value();
+        });
+}
+
+void World::playerAttack() {
+    (*m_player).attack();
+}
+
+// Helper func for the camera logic in the Game class
 sf::Vector2f World::getPlayerPosition() const {
     if (!m_player)
         return sf::Vector2f{0.f, 0.f};
-    else {
-        return (*m_player).getPosition();
-    }
+    return (*m_player).getPosition();
+}
+
+// Code=2
+void World::addNotes() {
+    for (auto &pos: positions)
+        m_notes.push_back(std::make_unique<Note>(pos));
 }
