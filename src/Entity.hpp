@@ -17,31 +17,36 @@ public:
 
     virtual void draw(sf::RenderTarget &target) const = 0;
 
-    [[nodiscard]] virtual sf::FloatRect getBounds() const = 0;
+    virtual void movementLogic(sf::Time dt) = 0;
 
-    // Position and velocity helpers
-    [[nodiscard]] virtual sf::Vector2f getPosition() const;
+    virtual void attackingLogic() = 0;
 
-    virtual void setPosition(const sf::Vector2f &position) = 0;
+    [[nodiscard]] sf::FloatRect getBounds() const;
+
+    [[nodiscard]] sf::Vector2f getPosition() const;
+
+    void setPosition(const sf::Vector2f &position);
 
     [[nodiscard]] bool getAttackingState() const;
-
-    void setAttackingState(bool state);
 
     [[nodiscard]] sf::Vector2f getVelocity() const;
 
     void setVelocity(const sf::Vector2f &velocity);
 
-
 protected:
+    sf::RectangleShape m_shape;
     sf::Vector2f m_position;
     sf::Vector2f m_velocity;
 
     // Attack logic
-    bool m_isAttacking = false;
+    bool m_isAttacking;
     sf::Clock m_activeAttackClock;
     sf::Clock m_cooldownAttackClock;
 
+    // Using a bool to see if the entity is facing left or right. True = Right and False = Left. Entity can only attack in the direction he is facing
+    // Player default = True / Right
+    // Enemy default = False / Left (this will be revised. Code=3)
+    bool m_currentFacingDirection;
 };
 
 

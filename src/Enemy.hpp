@@ -16,14 +16,13 @@ public:
 
     void draw(sf::RenderTarget &target) const override;
 
-    void setPosition(const sf::Vector2f &position) override;
+    void movementLogic(sf::Time dt) override;
 
-    sf::FloatRect getBounds() const override;
+    void attackingLogic() override;
 
     void setColor(sf::Color colour);
 
 private:
-    sf::RectangleShape m_shape;
     float m_leftLimit;
     float m_rightLimit;
 };

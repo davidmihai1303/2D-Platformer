@@ -17,8 +17,6 @@ public:
 
 private:
     sf::RectangleShape m_shape;
-    float m_topLimit;
-    float m_bottomLimit;
 };
 
 

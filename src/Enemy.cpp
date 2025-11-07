@@ -16,6 +16,18 @@ Enemy::Enemy(const sf::Vector2f &position, const sf::Vector2f &size) {
 }
 
 void Enemy::update(const sf::Time dt) {
+
+    movementLogic(dt);
+
+    // To have access to the enemy's position at all times without auxiliary func
+    m_position = m_shape.getPosition();
+}
+
+void Enemy::draw(sf::RenderTarget &target) const {
+    target.draw(m_shape);
+}
+
+void Enemy::movementLogic(const sf::Time dt) {
     m_shape.move(m_velocity * dt.asSeconds());
 
     if (const float x = m_shape.getPosition().x; x < m_leftLimit) {
@@ -25,22 +37,12 @@ void Enemy::update(const sf::Time dt) {
         m_shape.setPosition({m_rightLimit - m_shape.getSize().x, m_shape.getPosition().y});
         m_velocity.x = -std::abs(m_velocity.x);
     }
-    // To have access to the enemy's position at all times without auxiliary func
-    m_position = m_shape.getPosition();
 }
 
-void Enemy::draw(sf::RenderTarget &target) const {
-    target.draw(m_shape);
+void Enemy::attackingLogic() {
+    //TODO
 }
 
-void Enemy::setPosition(const sf::Vector2f &position) {
-    m_shape.setPosition(position);
-}
-
-sf::FloatRect Enemy::getBounds() const {
-    return m_shape.getGlobalBounds();
-};
-
-void Enemy::setColor(sf::Color colour) {
+void Enemy::setColor(const sf::Color colour) {
     m_shape.setFillColor(colour);
 }

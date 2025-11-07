@@ -76,7 +76,7 @@ void Game::updateCamera() {
     // Camera follows the player, but with added delay to make it more fluid
     const sf::Vector2f currentCenter = m_view.getCenter();
     const sf::Vector2f target = m_world.getPlayerPosition();
-    constexpr float smoothing = 0.04f; // between 0 and 1, (experimenting with values between 0.01 and 0.1)
+    constexpr float smoothing = 0.04f; // between 0 and 1, //TODO experiment with values between 0.01 and 0.1
     m_view.setCenter(currentCenter + (target - currentCenter) * smoothing);
     //TODO - make it frame rate independent
 }

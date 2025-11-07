@@ -5,7 +5,7 @@
 #include "Entity.hpp"
 
 Entity::Entity()
-    : m_position(0.f, 0.f), m_velocity(0.f, 0.f) {
+    : m_position(0.f, 0.f), m_velocity(0.f, 0.f), m_isAttacking(false), m_currentFacingDirection(false) {
     // Set the clocks on stop and time=0 by default
     m_activeAttackClock.reset();
     m_cooldownAttackClock.reset();
@@ -19,13 +19,18 @@ bool Entity::getAttackingState() const {
     return m_isAttacking;
 }
 
-void Entity::setAttackingState(bool state) {
-    m_isAttacking = state;
-}
-
 sf::Vector2f Entity::getVelocity() const {
     return m_velocity;
 }
+
+sf::FloatRect Entity::getBounds() const {
+    return m_shape.getGlobalBounds();
+}
+
+void Entity::setPosition(const sf::Vector2f &position) {
+    m_shape.setPosition(position);
+}
+
 
 void Entity::setVelocity(const sf::Vector2f &velocity) {
     m_velocity = velocity;

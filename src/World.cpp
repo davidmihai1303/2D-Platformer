@@ -33,17 +33,6 @@ void World::update(const sf::Time dt) {
     handleCollisions();
 }
 
-void World::draw() const {
-    m_window.draw(m_ground);
-
-    // Draw all entities
-    for (const auto &e: m_entities)
-        (*e).draw(m_window);
-    // Draw all notes
-    for (const auto &n: m_notes)
-        (*n).draw(m_window);
-}
-
 void World::handleCollisions() {
     sf::FloatRect playerBounds = (*m_player).getBounds();
 
@@ -69,7 +58,7 @@ void World::collision_player_ground(sf::FloatRect &playerBounds) {
     }
 }
 
-void World::collision_player_enemies(sf::FloatRect &playerBounds) {
+void World::collision_player_enemies(const sf::FloatRect &playerBounds) {
     if (!m_player)
         return;
 
@@ -103,7 +92,7 @@ void World::collision_player_enemies(sf::FloatRect &playerBounds) {
     }
 }
 
-void World::collision_player_notes(sf::FloatRect &playerBounds) {
+void World::collision_player_notes(const sf::FloatRect &playerBounds) {
     if (!m_player)
         return;
 
@@ -116,6 +105,7 @@ void World::collision_player_notes(sf::FloatRect &playerBounds) {
         });
 }
 
+// Helper func for the attack logic in the Game class
 void World::playerAttack() {
     (*m_player).attack();
 }
@@ -127,6 +117,18 @@ sf::Vector2f World::getPlayerPosition() const {
     return (*m_player).getPosition();
 }
 
+void World::draw() const {
+    m_window.draw(m_ground);
+
+    // Draw all entities
+    for (const auto &e: m_entities)
+        (*e).draw(m_window);
+
+    // Draw all notes
+    // Code=2
+    for (const auto &n: m_notes)
+        (*n).draw(m_window);
+}
 // Code=2
 void World::addNotes() {
     for (auto &pos: positions)

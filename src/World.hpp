@@ -29,9 +29,9 @@ private:
 
     void collision_player_ground(sf::FloatRect &playerBounds);
 
-    void collision_player_enemies(sf::FloatRect &playerBounds);
+    void collision_player_enemies(const sf::FloatRect &playerBounds);
 
-    void collision_player_notes(sf::FloatRect &playerBounds);
+    void collision_player_notes(const sf::FloatRect &playerBounds);
 
     sf::RenderWindow &m_window;
 
