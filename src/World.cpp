@@ -24,7 +24,7 @@ World::World(sf::RenderWindow &window) : m_window(window) {
     addNotes();
 }
 
-void World::update(const sf::Time dt, const InputState& inputState) {
+void World::update(const sf::Time dt, const InputState &inputState) {
     for (const auto &e: m_entities)
         (*e).update(dt);
     // It uses its own specific update func (the one with override)
@@ -132,8 +132,20 @@ void World::draw() const {
     for (const auto &n: m_notes)
         (*n).draw(m_window);
 }
+
 // Code=2
 void World::addNotes() {
     for (auto &pos: positions)
         m_notes.push_back(std::make_unique<Note>(pos));
+}
+
+std::ostream &operator<<(std::ostream &os, const World &w) {
+    os << "World:\n";
+    os << " Player -> " << *w.m_player << "\n";
+    for (const auto &e: w.m_entities)
+        if (e.get() != w.m_player)
+            os << " Enemy -> " << *e << "\n";
+    for (const auto& n : w.m_notes)
+        os << " Note -> " << *n << "\n";
+    return os;
 }

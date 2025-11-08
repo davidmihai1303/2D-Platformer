@@ -9,6 +9,8 @@
 
 class Entity {
 public:
+    friend std::ostream& operator<<(std::ostream& os, const Entity& e);
+
     Entity();
 
     virtual ~Entity() = default;

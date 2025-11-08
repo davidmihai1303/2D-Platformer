@@ -35,3 +35,10 @@ void Note::draw(sf::RenderTarget &target) const{
 sf::FloatRect Note::getBounds() const {
     return m_shape.getGlobalBounds();
 }
+
+std::ostream& operator<<(std::ostream& os, const Note& n) {
+    const sf::FloatRect bounds = n.getBounds();
+    os << "Note(size: " << bounds.size.x << "x" << bounds.size.y
+       << ", pos: " << bounds.position.x << ", " << bounds.position.y << ")";
+    return os;
+}

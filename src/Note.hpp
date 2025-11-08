@@ -9,6 +9,8 @@
 
 class Note {
 public:
+    friend std::ostream& operator<<(std::ostream& os, const Note& n);
+
     explicit Note(const sf::Vector2f& position);
 
     // Constructor de copiere

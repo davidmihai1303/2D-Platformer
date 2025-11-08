@@ -10,6 +10,8 @@
 
 class Enemy : public Entity {
 public:
+    friend std::ostream& operator<<(std::ostream& os, const Enemy& e);
+
     Enemy(const sf::Vector2f &position, const sf::Vector2f &size);
 
     void update(sf::Time dt) override;

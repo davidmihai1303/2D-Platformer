@@ -31,7 +31,12 @@ void Entity::setPosition(const sf::Vector2f &position) {
     m_shape.setPosition(position);
 }
 
-
 void Entity::setVelocity(const sf::Vector2f &velocity) {
     m_velocity = velocity;
+}
+
+std::ostream& operator<<(std::ostream& os, const Entity& e) {
+    os << "Entity(pos: " << e.m_position.x << ", " << e.m_position.y
+       << ", vel: " << e.m_velocity.x << ", " << e.m_velocity.y << ")";
+    return os;
 }

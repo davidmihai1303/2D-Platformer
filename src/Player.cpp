@@ -178,3 +178,11 @@ void Player::draw(sf::RenderTarget &target) const {
         target.draw(attackingShape);
     }
 }
+
+std::ostream& operator<<(std::ostream& os, const Player& p) {
+    os << "Player{";
+    os << static_cast<const Entity&>(p); // apelează operatorul din Entity
+    os << ", attacking=" << (p.m_isAttacking ? "true" : "false");
+    os << "}";
+    return os;
+}

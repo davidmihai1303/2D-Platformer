@@ -12,9 +12,12 @@
 #include "Entity.hpp"
 #include "Note.hpp"
 #include "InputState.hpp"
+#include <ostream>
 
 class World {
 public:
+    friend std::ostream& operator<<(std::ostream& os, const World& w);
+
     explicit World(sf::RenderWindow &window);
 
     void update(sf::Time dt, const InputState& inputState);

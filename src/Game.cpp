@@ -3,6 +3,7 @@
 //
 
 #include "Game.hpp"
+#include <iostream>
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Sound Fugue"),
                m_view({960.f, 540.f}, {1920.f, 1080.f}),
@@ -29,6 +30,7 @@ void Game::run() {
         m_window.clear();
         m_world.draw();
         m_window.display();
+        std::cout << m_world;
     }
 }
 
