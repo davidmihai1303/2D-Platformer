@@ -21,7 +21,7 @@ void Game::run() {
             dt = sf::seconds(0.05f);
 
         processEvents();
-        m_world.update(dt);
+        m_world.update(dt, m_inputState);
         updateCamera();
 
         m_window.setView(m_view);
@@ -40,10 +40,32 @@ void Game::processEvents() {
         } else if (auto *resize = event->getIf<sf::Event::Resized>()) {
             updateView(static_cast<float>(resize->size.x), static_cast<float>(resize->size.y));
         } else if (auto *button = event->getIf<sf::Event::MouseButtonPressed>()) {
-            if (button->button == sf::Mouse::Button::Left)
+            if (button->button == sf::Mouse::Button::Left) {
                 m_world.playerAttack(); // triggers once
-        }
+                m_inputState.clickDown = true;
+                if (m_inputState.shiftDown && m_inputState.firstPressed == '0')
+                    m_inputState.firstPressed = 's';
+            }
+        } else if (auto *key = event->getIf<sf::Event::KeyPressed>()) {
+            if (key->scancode == sf::Keyboard::Scan::LShift) {
+                m_inputState.shiftDown = true;
+                // if mouse already down, mouse came first
+                if (m_inputState.clickDown && m_inputState.firstPressed == '0')
+                    m_inputState.firstPressed = 'c';
+            }
+        } else if (auto *keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+            if (keyReleased->scancode == sf::Keyboard::Scan::LShift)
+                m_inputState.shiftDown = false;
+        } else if (auto *buttonReleased = event->getIf<sf::Event::MouseButtonReleased>())
+            if (buttonReleased->button == sf::Mouse::Button::Left)
+                m_inputState.clickDown = false;
     }
+    if (m_inputState.firstPressed == 's') {
+        if (!m_inputState.shiftDown && !m_inputState.clickDown)
+            m_inputState.firstPressed = '0';
+    } else if (m_inputState.firstPressed == 'c')
+        if (!m_inputState.shiftDown || !m_inputState.clickDown)
+            m_inputState.firstPressed = '0';
 }
 
 // Letter-box type view. Black bars will appear in order to keep the aspect ratio 16:9

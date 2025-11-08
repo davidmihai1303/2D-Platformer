@@ -5,7 +5,8 @@
 #include "Player.hpp"
 #include <iostream>
 
-Player::Player() : m_isRunning(false), m_onGround(false), m_lastFacingDirection(true) {
+Player::Player() : m_onGround(false), m_lastFacingDirection(true), m_frozenVelocity(sf::Vector2f(0, 0)),
+                   m_isFrozen(false) {
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
     m_shape.setPosition({0.f, 450.f});
@@ -18,9 +19,9 @@ void Player::update(const sf::Time dt) {
     attackingLogic();
 
 
-    std::cout << m_movement.x << "    " << m_movement.y << "         ";
-    //std::cout << m_velocity.x << " " << m_velocity.y << '\n';
-    std::cout << m_isRunning << '\n';
+    //std::cout << m_movement.x << "    " << m_movement.y << "   " << '\n';
+    std::cout << m_velocity.x << " " << m_velocity.y << '\n';
+    // std::cout << m_inputState.shiftDown << " " << m_inputState.clickDown << " " << m_inputState.firstPressed << '\n';
 
 
     // To have access to the player's position at all times without auxiliary func
@@ -33,13 +34,15 @@ void Player::movementLogic(const sf::Time dt) {
 
     // Left-Right movement
     m_movement = sf::Vector2f(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
-        m_movement.x -= moveSpeed;
-        m_currentFacingDirection = false;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
-        m_movement.x += moveSpeed;
-        m_currentFacingDirection = true;
+    if (!m_isFrozen) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
+            m_movement.x -= moveSpeed;
+            m_currentFacingDirection = false;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
+            m_movement.x += moveSpeed;
+            m_currentFacingDirection = true;
+        }
     }
 
     // Jumping logic and gravity
@@ -53,15 +56,21 @@ void Player::movementLogic(const sf::Time dt) {
             m_activeAttackClock.reset();
         }
     }
-    m_velocity.y += gravity * dt.asSeconds();
+    if (!m_isFrozen)
+        m_velocity.y += gravity * dt.asSeconds(); // Make sure gravity doesn't stack upp while frozen in-air
 
     // Running Logic
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift)) {
+    if (m_inputState.shiftDown) {
         m_movement.x *= 1.71f; //TODO experiment with other values
     }
 
-    if (m_isAttacking && !m_isRunning)
-        m_movement.x = 0.f; // If you attack while moving (but not running) you stop
+    // Stop moving if attacking
+    if (m_isAttacking) {
+        if (m_inputState.firstPressed != 's')
+            m_movement.x = 0;
+        else
+            m_movement.x *= 1.2f;       // Running and attacking gives speed boost
+    }
 
     // Move horizontally and vertically
     m_shape.move((m_movement + m_velocity) * dt.asSeconds());
@@ -75,25 +84,28 @@ void Player::attackingLogic() {
     if (m_activeAttackClock.getElapsedTime() >= m_activeAttackTime) {
         m_activeAttackClock.reset();
         m_isAttacking = false;
+        if (m_isFrozen) {
+            m_velocity = m_frozenVelocity; // Restore pre-attack motion
+            m_isFrozen = false;
+        }
     }
 
-    // Stop attacking if changing facing direction
-    if (m_currentFacingDirection != m_lastFacingDirection) {
-        if (m_isAttacking) {
+    if (m_isAttacking) {
+        // Stop attacking if changing facing direction
+        if (m_currentFacingDirection != m_lastFacingDirection) {
             m_isAttacking = false;
             m_activeAttackClock.reset();
+        }
+
+        // Attacking in-air logic
+        if (!m_onGround) {
+            m_frozenVelocity = m_velocity;
+            m_velocity = {0.f, 0.f};
+            m_isFrozen = true;
         }
     }
     m_lastFacingDirection = m_currentFacingDirection; // update for next frame
 
-    // Stop attacking if player moves
-    if (m_movement.x != 0.f && m_isAttacking == true)
-        m_isAttacking = false;
-
-    // Handle running and attacking
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::LShift) ||
-        sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::RShift)) {
-    }
 
     // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area
@@ -120,6 +132,11 @@ void Player::attack() {
         m_activeAttackClock.restart();
     }
 }
+
+void Player::setInputState(const InputState &inputState) {
+    m_inputState = inputState;
+}
+
 
 // Code=1
 sf::FloatRect Player::getAttackingBounds() const {

@@ -25,10 +25,13 @@ World::World(sf::RenderWindow &window) : m_window(window) {
     addNotes();
 }
 
-void World::update(const sf::Time dt) {
+void World::update(const sf::Time dt, const InputState& inputState) {
     for (const auto &e: m_entities)
         (*e).update(dt);
     // It uses its own specific update func (the one with override)
+
+    if (m_player)
+        (*m_player).setInputState(inputState);
 
     handleCollisions();
 }

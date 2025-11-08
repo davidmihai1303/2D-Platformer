@@ -6,6 +6,7 @@
 #define SOUNDFUGUE_GAME_HPP
 #include <SFML/Graphics.hpp>
 #include "World.hpp"
+#include "InputState.hpp"
 
 class Game {
 public:
@@ -24,6 +25,8 @@ private:
     sf::View m_view;
     World m_world;
     const unsigned int m_fps = 60;
+
+    InputState m_inputState;
 };
 
 

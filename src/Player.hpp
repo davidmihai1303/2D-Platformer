@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
+#include "InputState.hpp"
 
 class Player final : public Entity {
 public:
@@ -27,13 +28,15 @@ public:
 
     void attack();
 
+    void setInputState(const InputState& inputState);
+
+
     // Code=1
     sf::FloatRect getAttackingBounds() const;
 
 private:
+    InputState m_inputState;
     sf::Vector2f m_movement;
-
-    bool m_isRunning;
     bool m_onGround;
     sf::Time m_cooldownAttackTime = sf::seconds(0.5f);
     sf::Time m_activeAttackTime = sf::seconds(1.f); //TODO not sure
@@ -41,6 +44,10 @@ private:
     // Code=1
     sf::RectangleShape attackingShape;
     bool m_lastFacingDirection;
+
+    // Attacking in-air helpers
+    sf::Vector2f m_frozenVelocity;
+    bool m_isFrozen;
 
 };
 

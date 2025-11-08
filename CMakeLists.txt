@@ -72,6 +72,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Entity.hpp
         src/Note.cpp
         src/Note.hpp
+        src/InputState.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

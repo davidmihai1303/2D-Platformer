@@ -11,12 +11,13 @@
 #include "Enemy.hpp"
 #include "Entity.hpp"
 #include "Note.hpp"
+#include "InputState.hpp"
 
 class World {
 public:
     explicit World(sf::RenderWindow &window);
 
-    void update(sf::Time dt);
+    void update(sf::Time dt, const InputState& inputState);
 
     void draw() const;
 
