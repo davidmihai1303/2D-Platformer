@@ -12,8 +12,8 @@ Note::Note(const sf::Vector2f &position){
 
 
 // Constructor de copiere
-Note::Note(const Note& other) {
-    m_shape = other.m_shape;  // sf::RectangleShape are operator= deja implementat corect
+Note::Note(const Note& other) : m_shape(other.m_shape) {
+    // sf::RectangleShape are operator= deja implementat corect
 }
 
 // Operator= de copiere

@@ -13,6 +13,11 @@ public:
 
     ~TextureHolder();
 
+    // Forbid copying textures. Only copy by reference
+    TextureHolder(const TextureHolder&) = delete;
+
+    TextureHolder& operator=(const TextureHolder&) = delete;
+
     // We use reference to avoid making a copy of the large texture object
     [[nodiscard]] const sf::Texture &get() const;
 

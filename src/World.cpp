@@ -6,7 +6,6 @@
 
 World::World(sf::RenderWindow &window) : m_window(window) {
     // Create player
-    auto player = std::make_unique<Player>();
     m_entities.push_back(std::make_unique<Player>());
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
 
