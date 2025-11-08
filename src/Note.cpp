@@ -10,6 +10,24 @@ Note::Note(const sf::Vector2f &position){
     m_shape.setPosition(position);
 }
 
+
+// Constructor de copiere
+Note::Note(const Note& other) {
+    m_shape = other.m_shape;  // sf::RectangleShape are operator= deja implementat corect
+}
+
+// Operator= de copiere
+Note& Note::operator=(const Note& other) {
+    if (this != &other) {
+        m_shape = other.m_shape;
+    }
+    return *this;
+}
+
+// Destructor
+Note::~Note() {
+}
+
 void Note::draw(sf::RenderTarget &target) const{
     target.draw(m_shape);
 }
