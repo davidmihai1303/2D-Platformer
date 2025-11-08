@@ -3,13 +3,12 @@
 //
 
 #include "Player.hpp"
-#include <iostream>
 
 Player::Player() : m_onGround(false), m_lastFacingDirection(true), m_frozenVelocity(sf::Vector2f(0, 0)),
-                   m_isFrozen(false) {
+                   m_isFrozen(false), m_shiftFromGround(false), m_dashAttack(false), m_hasDashed(false) {
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
-    m_shape.setPosition({0.f, 450.f});
+    m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
 }
 
@@ -18,31 +17,25 @@ void Player::update(const sf::Time dt) {
 
     attackingLogic();
 
-
-    //std::cout << m_movement.x << "    " << m_movement.y << "   " << '\n';
-    std::cout << m_velocity.x << " " << m_velocity.y << '\n';
-    // std::cout << m_inputState.shiftDown << " " << m_inputState.clickDown << " " << m_inputState.firstPressed << '\n';
-
-
     // To have access to the player's position at all times without auxiliary func
     m_position = m_shape.getPosition();
 }
 
 void Player::movementLogic(const sf::Time dt) {
-    constexpr float moveSpeed = 350.f;
     constexpr float gravity = 2000.f;
 
     // Left-Right movement
     m_movement = sf::Vector2f(0.f, 0.f);
     if (!m_isFrozen) {
+        constexpr float moveSpeed = 350.f;
+        // so the player can't move while he's attacking in air
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::A)) {
             m_movement.x -= moveSpeed;
             m_currentFacingDirection = false;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scan::D)) {
             m_movement.x += moveSpeed;
             m_currentFacingDirection = true;
-        }
+        } else m_shiftFromGround = false;
     }
 
     // Jumping logic and gravity
@@ -57,23 +50,36 @@ void Player::movementLogic(const sf::Time dt) {
         }
     }
     if (!m_isFrozen)
-        m_velocity.y += gravity * dt.asSeconds(); // Make sure gravity doesn't stack upp while frozen in-air
+        m_velocity.y += gravity * dt.asSeconds(); // Make sure gravity doesn't stack up while frozen in-air
 
     // Running Logic
     if (m_inputState.shiftDown) {
         m_movement.x *= 1.71f; //TODO experiment with other values
+        if (m_onGround)
+            m_shiftFromGround = true;
     }
 
+    if (!m_inputState.shiftDown && m_onGround)
+        m_shiftFromGround = false;
+
+
     // Stop moving if attacking
-    if (m_isAttacking) {
+    if (m_isAttacking && !m_dashAttack) {
         if (m_inputState.firstPressed != 's')
-            m_movement.x = 0;
+            m_movement.x = 0.f;
         else
-            m_movement.x *= 1.2f;       // Running and attacking gives speed boost
+            m_movement.x *= 1.2f;
     }
+
+    // Smoothen dash attack so it decreases in speed over time
+    if (m_dashAttack)
+        m_velocity.x *= 0.985f; //TODO experiment with other values
+
 
     // Move horizontally and vertically
     m_shape.move((m_movement + m_velocity) * dt.asSeconds());
+
+    //TODO MAYBE - Make player move for heavier A/D presses. For subtle presses only change facing direction
 }
 
 void Player::attackingLogic() {
@@ -88,6 +94,7 @@ void Player::attackingLogic() {
             m_velocity = m_frozenVelocity; // Restore pre-attack motion
             m_isFrozen = false;
         }
+        m_dashAttack = false;
     }
 
     if (m_isAttacking) {
@@ -96,16 +103,8 @@ void Player::attackingLogic() {
             m_isAttacking = false;
             m_activeAttackClock.reset();
         }
-
-        // Attacking in-air logic
-        if (!m_onGround) {
-            m_frozenVelocity = m_velocity;
-            m_velocity = {0.f, 0.f};
-            m_isFrozen = true;
-        }
     }
     m_lastFacingDirection = m_currentFacingDirection; // update for next frame
-
 
     // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area
@@ -130,13 +129,29 @@ void Player::attack() {
         m_cooldownAttackClock.start();
         // Using restart() to be able to spam-attack
         m_activeAttackClock.restart();
+
+        if (!m_onGround) {
+            // We are already in the air when starting the attack
+            m_isFrozen = true;
+            if (m_shiftFromGround && !m_hasDashed) {
+                m_hasDashed = true;
+                // Running jump - keep moving forward, no A/D control
+                m_dashAttack = true;
+                constexpr float dashSpeed = 300.f; //TODO experiment with other values
+                m_velocity.x = m_currentFacingDirection ? dashSpeed : -dashSpeed;
+                m_velocity.y = 0.f;
+            } else {
+                // Neutral jump -> classic freeze in air
+                m_frozenVelocity = m_velocity;
+                m_velocity = {0.f, 0.f};
+            }
+        }
     }
 }
 
 void Player::setInputState(const InputState &inputState) {
     m_inputState = inputState;
 }
-
 
 // Code=1
 sf::FloatRect Player::getAttackingBounds() const {
@@ -150,6 +165,11 @@ void Player::setOnGround(const bool value) {
 sf::FloatRect Player::getPlayerDimensions() const {
     return m_shape.getLocalBounds();
 }
+
+void Player::resetDash() {
+    m_hasDashed = false;
+}
+
 
 void Player::draw(sf::RenderTarget &target) const {
     target.draw(m_shape);

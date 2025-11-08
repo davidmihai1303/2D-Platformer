@@ -56,6 +56,7 @@ void World::collision_player_ground(sf::FloatRect &playerBounds) {
         });
         (*m_player).setOnGround(true);
         (*m_player).setVelocity({(*m_player).getVelocity().x, 0.f});
+        (*m_player).resetDash();
     } else {
         (*m_player).setOnGround(false);
     }

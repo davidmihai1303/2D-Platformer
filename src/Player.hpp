@@ -28,8 +28,9 @@ public:
 
     void attack();
 
-    void setInputState(const InputState& inputState);
+    void setInputState(const InputState &inputState);
 
+    void resetDash();
 
     // Code=1
     sf::FloatRect getAttackingBounds() const;
@@ -38,8 +39,8 @@ private:
     InputState m_inputState;
     sf::Vector2f m_movement;
     bool m_onGround;
-    sf::Time m_cooldownAttackTime = sf::seconds(0.5f);
-    sf::Time m_activeAttackTime = sf::seconds(1.f); //TODO not sure
+    sf::Time m_cooldownAttackTime = sf::seconds(.5f);
+    sf::Time m_activeAttackTime = sf::seconds(.8f); //TODO experiment with other values
 
     // Code=1
     sf::RectangleShape attackingShape;
@@ -49,6 +50,11 @@ private:
     sf::Vector2f m_frozenVelocity;
     bool m_isFrozen;
 
+    bool m_shiftFromGround;    // If you pressed Shift while you were on ground
+    // We need this variable to tell whether the jump was while moving or while running, regardless of pressing Shift in-air
+
+    bool m_dashAttack;
+    bool m_hasDashed;
 };
 
 
