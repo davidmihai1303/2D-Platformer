@@ -5,7 +5,7 @@
 #include "Game.hpp"
 #include <iostream>
 
-Game::Game() : m_window(sf::VideoMode({1920, 1080}), "Sound Fugue"),
+Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
                m_view({960.f, 540.f}, {1920.f, 1080.f}),
                m_world(m_window) {
 }
