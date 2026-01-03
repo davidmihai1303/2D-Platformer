@@ -27,7 +27,7 @@ public:
 
     [[nodiscard]] sf::Vector2f getPosition() const;
 
-    void setPosition(const sf::Vector2f &position);
+    virtual void setPosition(const sf::Vector2f &position);
 
     [[nodiscard]] bool getAttackingState() const;
 

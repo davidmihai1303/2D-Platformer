@@ -34,6 +34,8 @@ public:
 
     void resetDash();
 
+    void setPosition(const sf::Vector2f &position) override;
+
     // Code=1
     sf::FloatRect getAttackingBounds() const;
 
@@ -59,6 +61,15 @@ private:
 
     bool m_dashAttack;
     bool m_hasDashed;
+
+    // --- Animation Variables ---
+    int m_currentFrame;       // Current frame index (0 to 7)
+    float m_animDuration;     // How long one frame stays on screen (e.g. 0.1s)
+    float m_elapsedTime;      // Timer accumulator
+    sf::Vector2u m_frameSize; // Width and Height of a single frame
+    int m_numFrames;          // Total frames (8 in your case)
+    // ---------------------------
+
 };
 
 

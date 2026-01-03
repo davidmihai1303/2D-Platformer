@@ -5,7 +5,7 @@
 #include "World.hpp"
 
 World::World(sf::RenderWindow &window) : m_window(window),
-m_playerTexture("resources/aeris_standing_animation_spritesheet.png"){
+m_playerTexture("resources/aeris_standing_animation.png"){
 
     // Create player
     m_entities.push_back(std::make_unique<Player>(m_playerTexture.get()));
@@ -147,7 +147,5 @@ std::ostream &operator<<(std::ostream &os, const World &w) {
     for (const auto &e: w.m_entities)
         if (e.get() != w.m_player)
             os << " Enemy -> " << *e << "\n";
-    for (const auto& n : w.m_notes)
-        os << " Note -> " << *n << "\n";
     return os;
 }

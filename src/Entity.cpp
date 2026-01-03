@@ -36,7 +36,7 @@ void Entity::setVelocity(const sf::Vector2f &velocity) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Entity& e) {
-    os << "Entity(pos: " << e.m_position.x << ", " << e.m_position.y
+    os << "Entity(pos: " << e.m_shape.getGlobalBounds().position.x << ", " <<  e.m_shape.getGlobalBounds().position.y
        << ", vel: " << e.m_velocity.x << ", " << e.m_velocity.y << ")";
     return os;
 }

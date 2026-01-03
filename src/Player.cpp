@@ -4,23 +4,60 @@
 
 #include "Player.hpp"
 
-Player::Player(const sf::Texture& texture) : m_sprite(texture), m_onGround(false), m_lastFacingDirection(true), m_frozenVelocity(sf::Vector2f(0, 0)),
-                   m_isFrozen(false), m_shiftFromGround(false), m_dashAttack(false), m_hasDashed(false) {
-    m_shape.setSize(sf::Vector2f({50.f, 100.f}));
+Player::Player(const sf::Texture &texture) : m_sprite(texture), m_onGround(false), m_lastFacingDirection(true),
+                                             m_frozenVelocity(sf::Vector2f(0, 0)),
+                                             m_isFrozen(false), m_shiftFromGround(false), m_dashAttack(false),
+                                             m_hasDashed(false), m_currentFrame(0),
+                                             m_animDuration(0.2f), // Change frame every 0.2 seconds
+                                             m_elapsedTime(0.f),
+                                             m_numFrames(8) // You have 8 frames
+{
+    m_shape.setSize(sf::Vector2f({80.f, 108.f}));
     m_shape.setFillColor(sf::Color::Green);
     m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
+
+    // CALCULATE FRAME SIZE
+    // A horizontal strip: Width / 8, Height = Full Height
+    const sf::Vector2u textureSize = texture.getSize();
+    m_frameSize = sf::Vector2u(textureSize.x / m_numFrames, textureSize.y);
+    // Set the first frame
+    m_sprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_frameSize)));
 }
 
 void Player::update(const sf::Time dt) {
     movementLogic(dt);
-
     attackingLogic();
-
-    m_sprite.setPosition(m_shape.getPosition());
 
     // To have access to the player's position at all times without auxiliary func
     m_position = m_shape.getPosition();
+
+    // --- ANIMATION LOGIC ---
+    m_elapsedTime += dt.asSeconds();
+
+    // If enough time passed, switch to next frame
+    if (m_elapsedTime >= m_animDuration) {
+        m_elapsedTime = 0.f; // Reset timer
+        m_currentFrame++; // Next frame
+
+        // Loop back to 0 if we exceed the count (0 -> 1 -> ... -> 7 -> 0)
+        if (m_currentFrame >= m_numFrames) {
+            m_currentFrame = 0;
+        }
+
+        // Calculating the coordinate for every frame;
+        // Frame x starts at x * width (80 here)
+        const long long leftAux = m_currentFrame * m_frameSize.x;
+        int left = static_cast<int>(leftAux); // weird conversion
+
+        int top = 0; // Top is always 0 for a single row spritesheet
+
+        m_sprite.setTextureRect(sf::IntRect({left, top}, sf::Vector2<int>(m_frameSize)));
+    }
+
+    // --- SYNC POSITION ---
+    // Snap sprite to hitbox
+    m_sprite.setPosition(m_shape.getPosition());
 }
 
 void Player::movementLogic(const sf::Time dt) {
@@ -77,11 +114,15 @@ void Player::movementLogic(const sf::Time dt) {
     if (m_dashAttack)
         m_velocity.x *= 0.985f; //TODO experiment with other values
 
-
     // Move horizontally and vertically
     m_shape.move((m_movement + m_velocity) * dt.asSeconds());
 
     //TODO MAYBE - Make player move for heavier A/D presses. For subtle presses only change facing direction
+
+    if (m_lastFacingDirection != m_currentFacingDirection) {
+        m_sprite.setScale({-1.f * m_sprite.getScale().x, 1.f});
+        m_sprite.setOrigin({static_cast<float>(m_lastFacingDirection)*m_shape.getSize().x, 0});
+    }
 }
 
 void Player::attackingLogic() {
@@ -172,19 +213,27 @@ void Player::resetDash() {
     m_hasDashed = false;
 }
 
+// Player.cpp
+
+void Player::setPosition(const sf::Vector2f &position) {
+    m_shape.setPosition(position);
+    m_sprite.setPosition(position);
+}
 
 void Player::draw(sf::RenderTarget &target) const {
     target.draw(m_shape);
+    target.draw(m_sprite);
     // Code=1
     if (m_isAttacking) {
         target.draw(attackingShape);
     }
 }
 
-std::ostream& operator<<(std::ostream& os, const Player& p) {
+std::ostream &operator<<(std::ostream &os, const Player &p) {
     os << "Player{";
-    os << static_cast<const Entity&>(p); // apelează operatorul din Entity
+    os << static_cast<const Entity &>(p); // apelează operatorul din Entity
     os << ", attacking=" << (p.m_isAttacking ? "true" : "false");
+    os << ", sprite= " << p.m_sprite.getGlobalBounds().position.x << ", " << p.m_sprite.getGlobalBounds().position.y;
     os << "}";
     return os;
 }

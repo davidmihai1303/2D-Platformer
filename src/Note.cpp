@@ -38,7 +38,7 @@ sf::FloatRect Note::getBounds() const {
 
 std::ostream& operator<<(std::ostream& os, const Note& n) {
     const sf::FloatRect bounds = n.getBounds();
-    os << "Note(size: " << bounds.size.x << "x" << bounds.size.y
-       << ", pos: " << bounds.position.x << ", " << bounds.position.y << ")";
+    // os << "Note(size: " << bounds.size.x << "x" << bounds.size.y
+    //    << ", pos: " << bounds.position.x << ", " << bounds.position.y << ")";
     return os;
 }
