@@ -12,7 +12,7 @@ Player::Player(const sf::Texture &texture) : m_sprite(texture), m_onGround(false
                                              m_elapsedTime(0.f),
                                              m_numFrames(8) // You have 8 frames
 {
-    m_shape.setSize(sf::Vector2f({80.f, 108.f}));
+    m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
     m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
@@ -23,6 +23,7 @@ Player::Player(const sf::Texture &texture) : m_sprite(texture), m_onGround(false
     m_frameSize = sf::Vector2u(textureSize.x / m_numFrames, textureSize.y);
     // Set the first frame
     m_sprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_frameSize)));
+    m_sprite.setOrigin({m_sprite.getLocalBounds().size.x / 2 + 5.f, m_sprite.getLocalBounds().size.y}); //origin in the middle bottom with offset to match the body
 }
 
 void Player::update(const sf::Time dt) {
@@ -57,7 +58,7 @@ void Player::update(const sf::Time dt) {
 
     // --- SYNC POSITION ---
     // Snap sprite to hitbox
-    m_sprite.setPosition(m_shape.getPosition());
+    m_sprite.setPosition({m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y});
 }
 
 void Player::movementLogic(const sf::Time dt) {
@@ -121,7 +122,6 @@ void Player::movementLogic(const sf::Time dt) {
 
     if (m_lastFacingDirection != m_currentFacingDirection) {
         m_sprite.setScale({-1.f * m_sprite.getScale().x, 1.f});
-        m_sprite.setOrigin({static_cast<float>(m_lastFacingDirection)*m_shape.getSize().x, 0});
     }
 }
 
@@ -217,7 +217,7 @@ void Player::resetDash() {
 
 void Player::setPosition(const sf::Vector2f &position) {
     m_shape.setPosition(position);
-    m_sprite.setPosition(position);
+    m_sprite.setPosition({m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y});
 }
 
 void Player::draw(sf::RenderTarget &target) const {
@@ -233,7 +233,7 @@ std::ostream &operator<<(std::ostream &os, const Player &p) {
     os << "Player{";
     os << static_cast<const Entity &>(p); // apelează operatorul din Entity
     os << ", attacking=" << (p.m_isAttacking ? "true" : "false");
-    os << ", sprite= " << p.m_sprite.getGlobalBounds().position.x << ", " << p.m_sprite.getGlobalBounds().position.y;
+    os << ", sprite= " << p.m_sprite.getLocalBounds().size.x << ", " << p.m_sprite.getLocalBounds().size.y;
     os << "}";
     return os;
 }
