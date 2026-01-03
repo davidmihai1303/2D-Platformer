@@ -4,7 +4,7 @@
 
 #include "Player.hpp"
 
-Player::Player() : m_onGround(false), m_lastFacingDirection(true), m_frozenVelocity(sf::Vector2f(0, 0)),
+Player::Player(const sf::Texture& texture) : m_sprite(texture), m_onGround(false), m_lastFacingDirection(true), m_frozenVelocity(sf::Vector2f(0, 0)),
                    m_isFrozen(false), m_shiftFromGround(false), m_dashAttack(false), m_hasDashed(false) {
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
@@ -16,6 +16,8 @@ void Player::update(const sf::Time dt) {
     movementLogic(dt);
 
     attackingLogic();
+
+    m_sprite.setPosition(m_shape.getPosition());
 
     // To have access to the player's position at all times without auxiliary func
     m_position = m_shape.getPosition();

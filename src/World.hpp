@@ -12,6 +12,7 @@
 #include "Entity.hpp"
 #include "Note.hpp"
 #include "InputState.hpp"
+#include "TextureHolder.hpp"
 #include <ostream>
 
 class World {
@@ -52,6 +53,9 @@ private:
         {100, 300}, {200, 350}, {300, 380}, {400, 320}, {500, 310},
         {600, 340}, {700, 360}, {800, 300}, {900, 330}, {1000, 350}
     };
+
+    TextureHolder m_playerTexture;
+
     void addNotes();
 
 };

@@ -19,7 +19,7 @@ public:
     TextureHolder& operator=(const TextureHolder&) = delete;
 
     // We use reference to avoid making a copy of the large texture object
-    [[nodiscard]] const sf::Texture &get() const;
+    [[nodiscard]] sf::Texture &get() const;
 
 private:
     sf::Texture *m_texture;

@@ -13,7 +13,7 @@ class Player final : public Entity {
 public:
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 
-    Player();
+    explicit Player(const sf::Texture& texture);
 
     void update(sf::Time dt) override;
 
@@ -38,6 +38,8 @@ public:
     sf::FloatRect getAttackingBounds() const;
 
 private:
+    sf::Sprite m_sprite;
+
     InputState m_inputState;
     sf::Vector2f m_movement;
     bool m_onGround;

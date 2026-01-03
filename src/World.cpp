@@ -4,9 +4,11 @@
 #include <algorithm>
 #include "World.hpp"
 
-World::World(sf::RenderWindow &window) : m_window(window) {
+World::World(sf::RenderWindow &window) : m_window(window),
+m_playerTexture("resources/aeris_standing_animation_spritesheet.png"){
+
     // Create player
-    m_entities.push_back(std::make_unique<Player>());
+    m_entities.push_back(std::make_unique<Player>(m_playerTexture.get()));
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
 
     // Create an enemy

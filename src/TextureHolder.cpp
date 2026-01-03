@@ -16,7 +16,7 @@ TextureHolder::~TextureHolder() {
     delete m_texture;
 }
 
-const sf::Texture &TextureHolder::get() const {
+sf::Texture &TextureHolder::get() const {
     if (!m_texture) {
         throw std::runtime_error("Texture not loaded!");
     }
