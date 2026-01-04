@@ -54,7 +54,12 @@ private:
         {600, 340}, {700, 360}, {800, 300}, {900, 330}, {1000, 350}
     };
 
-    TextureHolder m_playerTexture;
+    // --- Player textures:
+
+    TextureHolder m_playerStandingTexture;
+    TextureHolder m_playerWalkingTexture;
+
+    // -----------
 
     void addNotes();
 

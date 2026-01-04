@@ -13,7 +13,7 @@ class Player final : public Entity {
 public:
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 
-    explicit Player(const sf::Texture& texture);
+    explicit Player(const sf::Texture& standingTexture, const sf::Texture& walkingTexture);
 
     void update(sf::Time dt) override;
 
@@ -39,8 +39,12 @@ public:
     // Code=1
     sf::FloatRect getAttackingBounds() const;
 
+
 private:
-    sf::Sprite m_sprite;
+    // --- Sprites
+    sf::Sprite m_standingSprite;
+    sf::Sprite m_walkingSprite;
+    // --------
 
     InputState m_inputState;
     sf::Vector2f m_movement;
@@ -63,13 +67,24 @@ private:
     bool m_hasDashed;
 
     // --- Animation Variables ---
-    int m_currentFrame;       // Current frame index (0 to 7)
-    float m_animDuration;     // How long one frame stays on screen (e.g. 0.1s)
-    float m_elapsedTime;      // Timer accumulator
-    sf::Vector2u m_frameSize; // Width and Height of a single frame
-    int m_numFrames;          // Total frames (8 in your case)
+    unsigned int m_animationToDraw;     // What animation to draw on screen: 0 - standing, 1 - walking, 2 - attack
+
+    int m_standing_currentFrame;       // Current frame index (starting from 0)
+    float m_standing_animDuration;     // How long one frame stays on screen (in seconds)
+    float m_standing_elapsedTime;      // Timer
+    sf::Vector2u m_standing_frameSize; // Width and Height of a single frame
+    int m_standing_numFrames;          // Total frames in spritesheet
+
+    int m_walking_currentFrame;
+    float m_walking_animDuration;
+    float m_walking_elapsedTime;
+    sf::Vector2u m_walking_frameSize;
+    int m_walking_numFrames;
     // ---------------------------
 
+    void animationLogic(sf::Time dt);
+    void standingAnimation(sf::Time dt);
+    void walkingAnimation(sf::Time dt);
 };
 
 

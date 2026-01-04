@@ -5,7 +5,8 @@
 #include "Entity.hpp"
 
 Entity::Entity()
-    : m_position(0.f, 0.f), m_velocity(0.f, 0.f), m_isAttacking(false), m_currentFacingDirection(false) {
+    : m_position(0.f, 0.f), m_velocity(0.f, 0.f), m_isMoving(false), m_isAttacking(false),
+      m_currentFacingDirection(false) {
     // Set the clocks on stop and time=0 by default
     m_activeAttackClock.reset();
     m_cooldownAttackClock.reset();
@@ -35,8 +36,8 @@ void Entity::setVelocity(const sf::Vector2f &velocity) {
     m_velocity = velocity;
 }
 
-std::ostream& operator<<(std::ostream& os, const Entity& e) {
-    os << "Entity(pos: " << e.m_shape.getGlobalBounds().position.x << ", " <<  e.m_shape.getGlobalBounds().position.y
-       << ", vel: " << e.m_velocity.x << ", " << e.m_velocity.y << ")";
+std::ostream &operator<<(std::ostream &os, const Entity &e) {
+    os << "Entity(pos: " << e.m_shape.getGlobalBounds().position.x << ", " << e.m_shape.getGlobalBounds().position.y
+            << ", vel: " << e.m_velocity.x << ", " << e.m_velocity.y << ")";
     return os;
 }

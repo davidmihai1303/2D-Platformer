@@ -40,6 +40,8 @@ protected:
     sf::Vector2f m_position;
     sf::Vector2f m_velocity;
 
+    bool m_isMoving;
+
     // Attack logic
     bool m_isAttacking;
     sf::Clock m_activeAttackClock;
