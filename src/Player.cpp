@@ -213,8 +213,6 @@ void Player::resetDash() {
     m_hasDashed = false;
 }
 
-// Player.cpp
-
 void Player::setPosition(const sf::Vector2f &position) {
     m_shape.setPosition(position);
     m_sprite.setPosition({m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y});
