@@ -9,15 +9,23 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_frozenVelocity(sf::Vector2f(0, 0)),
     m_isFrozen(false), m_shiftFromGround(false), m_dashAttack(false),
     m_hasDashed(false),
+
+    //  -- ANIMATIONS
+    // TODO  experiment with other values
     m_animationToDraw(0),
+
     m_standing_currentFrame(0),
     m_standing_animDuration(0.2f),
     m_standing_elapsedTime(0.f),
     m_standing_numFrames(8),
+
     m_walking_currentFrame(0),
-    m_walking_animDuration(0.2f),
+    m_walking_animDuration(0.1f),
     m_walking_elapsedTime(0.f),
-    m_walking_numFrames(8) {
+    m_walking_numFrames(8)
+
+
+{
     // Create the player's hitbox
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Green);
@@ -33,7 +41,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     // Set the first frame
     m_standingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_standing_frameSize)));
     m_standingSprite.setOrigin({
-        m_standingSprite.getLocalBounds().size.x / 2 + 5.f, m_standingSprite.getLocalBounds().size.y
+        m_standing_frameSize.x / 2 + 5.f, static_cast<float>(m_standing_frameSize.y)
     }); //origin in the middle bottom with offset to match the body
 
     //     --------- WALKING ANIMATION --------
@@ -41,7 +49,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_walking_frameSize = sf::Vector2u(walkingTextureSize.x / m_walking_numFrames, walkingTextureSize.y);
     m_walkingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_walking_frameSize)));
     m_walkingSprite.setOrigin({
-        m_walkingSprite.getLocalBounds().size.x / 2 + 5.f, m_walkingSprite.getLocalBounds().size.y
+        m_walking_frameSize.x / 2 + 5.f, static_cast<float>(m_walking_frameSize.y)
     }); //origin in the middle bottom with offset to match the body
 }
 
@@ -118,9 +126,12 @@ void Player::movementLogic(const sf::Time dt) {
 
     //TODO MAYBE - Make player move for heavier A/D presses. For subtle presses only change facing direction
 
+    // Flip the sprites
     if (m_lastFacingDirection != m_currentFacingDirection) {
         m_standingSprite.setScale({-1.f * m_standingSprite.getScale().x, 1.f});
+        m_walkingSprite.setScale({-1.f * m_walkingSprite.getScale().x, 1.f});
     }
+
 }
 
 void Player::attackingLogic() {
@@ -191,12 +202,25 @@ void Player::attack() {
 }
 
 void Player::animationLogic(const sf::Time dt) {
-    standingAnimation(dt);
-   // walkingAnimation(dt);
+    if (!m_isMoving) {
+        m_animationToDraw = 0;  // Tell which sprite to draw
+        standingAnimation(dt);  // Animation logic
+
+        // --- Reset the other animations so they start from the beginning next time
+        m_walking_elapsedTime = 0.f;
+        m_walking_currentFrame = 0;
+
+    }else {
+        m_animationToDraw = 1;  // Tell which sprite to draw
+        walkingAnimation(dt);  // Animation logic
+
+        // --- Reset the other animations so they start form the beginning next time
+        m_standing_elapsedTime = 0.f;
+        m_standing_currentFrame = 0;
+    }
 }
 
 void Player::standingAnimation(const sf::Time dt) {
-
     m_standing_elapsedTime += dt.asSeconds();
 
     // If enough time passed, switch to next frame
@@ -205,12 +229,11 @@ void Player::standingAnimation(const sf::Time dt) {
         m_standing_currentFrame++; // Next frame
 
         // Loop back to 0 if we exceed the count (0 -> 1 -> ... -> 7 -> 0)
-        if (m_standing_currentFrame >= m_standing_numFrames) {
+        if (m_standing_currentFrame >= m_standing_numFrames)
             m_standing_currentFrame = 0;
-        }
 
         // Calculating the coordinate for every frame;
-        // Frame x starts at x * width (80 here)
+        // Frame x starts at currentFrame * width (80 here)
         const long long leftAux = m_standing_currentFrame * m_standing_frameSize.x;
         int left = static_cast<int>(leftAux); // weird conversion
 
@@ -222,38 +245,40 @@ void Player::standingAnimation(const sf::Time dt) {
     // --- SYNC POSITION ---
     // Snap sprite to hitbox
     m_standingSprite.setPosition({
-        m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y
+        m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y    // bottom center of the hitbox
     });
 }
 
-void walkingAnimation(const sf::Time dt) {
-}
+void Player::walkingAnimation(const sf::Time dt) {
+    m_walking_elapsedTime += dt.asSeconds();
 
+    // If enough time has passed, switch to next frame
+    if (m_walking_elapsedTime >= m_walking_animDuration) {
+        m_walking_elapsedTime = 0.f; // reset timer
+        m_walking_currentFrame++; // next frame
 
-void Player::setInputState(const InputState &inputState) {
-    m_inputState = inputState;
-}
+        if (m_walking_currentFrame >= m_walking_numFrames)
+            m_walking_currentFrame = 0;
 
-// Code=1
-sf::FloatRect Player::getAttackingBounds() const {
-    return attackingShape.getGlobalBounds();
-}
+        const long long leftAux = m_walking_currentFrame * m_walking_frameSize.x;
+        int left = static_cast<int>(leftAux);
+        int top = 0;
+        m_walkingSprite.setTextureRect(sf::IntRect({left, top}, sf::Vector2<int>(m_walking_frameSize)));
+    }
 
-void Player::setOnGround(const bool value) {
-    m_onGround = value;
-}
-
-sf::FloatRect Player::getPlayerDimensions() const {
-    return m_shape.getLocalBounds();
-}
-
-void Player::resetDash() {
-    m_hasDashed = false;
+    // --- SYNC POSITION ---
+    // Snap sprite to hitbox
+    m_walkingSprite.setPosition({
+        m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y    // bottom center of the hitbox
+    });
 }
 
 void Player::setPosition(const sf::Vector2f &position) {
     m_shape.setPosition(position);
     m_standingSprite.setPosition({
+        m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y
+    });
+    m_walkingSprite.setPosition({
         m_shape.getPosition().x + m_shape.getSize().x / 2, m_shape.getPosition().y + m_shape.getSize().y
     });
 }
@@ -278,6 +303,34 @@ void Player::draw(sf::RenderTarget &target) const {
         target.draw(attackingShape);
     }
 }
+
+
+
+// ----- Auxiliar funcs
+
+void Player::setInputState(const InputState &inputState) {
+    m_inputState = inputState;
+}
+
+// Code=1
+sf::FloatRect Player::getAttackingBounds() const {
+    return attackingShape.getGlobalBounds();
+}
+
+void Player::setOnGround(const bool value) {
+    m_onGround = value;
+}
+
+sf::FloatRect Player::getPlayerDimensions() const {
+    return m_shape.getLocalBounds();
+}
+
+void Player::resetDash() {
+    m_hasDashed = false;
+}
+
+// -------
+
 
 std::ostream &operator<<(std::ostream &os, const Player &p) {
     os << "Player{";

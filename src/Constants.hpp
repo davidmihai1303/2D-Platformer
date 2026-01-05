@@ -1,0 +1,8 @@
+//
+// Created by david on 1/5/2026.
+//
+
+#ifndef SOUNDFUGUE_CONSTANTS_HPP
+#define SOUNDFUGUE_CONSTANTS_HPP
+
+#endif //SOUNDFUGUE_CONSTANTS_HPP
