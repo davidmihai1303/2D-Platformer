@@ -28,7 +28,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
 {
     // Create the player's hitbox
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
-    m_shape.setFillColor(sf::Color::Green);
+    m_shape.setFillColor(sf::Color::Transparent);
     m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
 

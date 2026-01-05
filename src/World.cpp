@@ -5,8 +5,8 @@
 #include "World.hpp"
 
 World::World(sf::RenderWindow &window) : m_window(window),
-                                         m_playerStandingTexture("../resources/aeris_standing_animation_spritesheet.png"),
-                                         m_playerWalkingTexture("../resources/aeris_walking_animation_spritesheet.png") {
+                                         m_playerStandingTexture("../resources/sprites/aeris_standing_animation_spritesheet.png"),
+                                         m_playerWalkingTexture("../resources/sprites/aeris_walking_animation_spritesheet.png") {
     // Create player
     m_entities.push_back(std::make_unique<Player>(m_playerStandingTexture.get(), m_playerWalkingTexture.get()));
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
