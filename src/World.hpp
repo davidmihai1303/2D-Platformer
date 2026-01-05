@@ -58,6 +58,7 @@ private:
 
     TextureHolder m_playerStandingTexture;
     TextureHolder m_playerWalkingTexture;
+    TextureHolder m_playerAttackingTexture;
 
     // -----------
 

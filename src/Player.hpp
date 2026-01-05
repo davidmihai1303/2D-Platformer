@@ -13,7 +13,7 @@ class Player final : public Entity {
 public:
     friend std::ostream& operator<<(std::ostream& os, const Player& p);
 
-    explicit Player(const sf::Texture& standingTexture, const sf::Texture& walkingTexture);
+    explicit Player(const sf::Texture& standingTexture, const sf::Texture& walkingTexture, const sf::Texture& attackingTexture);
 
     void update(sf::Time dt) override;
 
@@ -44,13 +44,14 @@ private:
     // --- Sprites
     sf::Sprite m_standingSprite;
     sf::Sprite m_walkingSprite;
+    sf::Sprite m_attackingSprite;
     // --------
 
     InputState m_inputState;
     sf::Vector2f m_movement;
     bool m_onGround;
     sf::Time m_cooldownAttackTime = sf::seconds(.5f);
-    sf::Time m_activeAttackTime = sf::seconds(.8f); //TODO experiment with other values
+    sf::Time m_activeAttackTime = sf::seconds(.56f); //TODO experiment with other values
 
     // Code=1
     sf::RectangleShape attackingShape;
@@ -80,11 +81,18 @@ private:
     float m_walking_elapsedTime;
     sf::Vector2u m_walking_frameSize;
     int m_walking_numFrames;
+
+    int m_attacking_currentFrame;
+    float m_attacking_animDuration;
+    float m_attacking_elapsedTime;
+    sf::Vector2u m_attacking_frameSize;
+    int m_attacking_numFrames;
     // ---------------------------
 
     void animationLogic(sf::Time dt);
     void standingAnimation(sf::Time dt);
     void walkingAnimation(sf::Time dt);
+    void attackingAnimation(sf::Time dt);
 };
 
 
