@@ -5,9 +5,10 @@
 #include "Game.hpp"
 #include <iostream>
 #include <cmath>
+#include "Constants.hpp"
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
-               m_view({960.f, 540.f}, {1920.f, 1080.f}),
+               m_view({Constants::Window::ViewCenterX, Constants::Window::ViewCenterY}, {Constants::Window::Width, Constants::Window::Height}),
                m_world(m_window) {
 }
 
@@ -73,7 +74,7 @@ void Game::processEvents() {
 
 // Letter-box type view. Black bars will appear in order to keep the aspect ratio 16:9
 void Game::updateView(const float x, const float y) {
-    constexpr float baseRatio = 1920.f / 1080.f;
+    constexpr float baseRatio = Constants::Window::Width / Constants::Window::Height;
     const float newRatio = x / y;
 
     float sizeX = 1.f;
@@ -92,7 +93,7 @@ void Game::updateView(const float x, const float y) {
     }
 
     // Reset the view to the logical world (1920x1080)
-    m_view.setSize({1920.f, 1080.f});
+    m_view.setSize({Constants::Window::Width, Constants::Window::Height});
     m_view.setViewport(sf::FloatRect({posX, posY}, {sizeX, sizeY}));
     m_window.setView(m_view);
 }
@@ -104,7 +105,7 @@ void Game::updateCamera(const sf::Time dt) {
 
     // We want to smooth by 0.04 (4%) 60 times in a second
     // This means we retain 0.96 (96%) of the distance.
-    constexpr float friction = 1.0f - 0.04f; // 0.96f
+    constexpr float friction = 1.0f - Constants::Camera::SmoothingBase;
 
     // Calculate how much distance to retain for this specific dt
     const float frameDamping = std::pow(friction, 60.f * dt.asSeconds());

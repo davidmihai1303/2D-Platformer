@@ -11,6 +11,8 @@
 
 // Certain mechanics were tested with a frame rate cap of 60, so they were changed to keep the same values with any framerate. That's why they're weirdly implemented (pow(60))
 
+// Constants.hpp contains constants that will be fine-tuned frequently
+
 //TODO throw errors if player is not found inside the World class
 
 #include "Game.hpp"

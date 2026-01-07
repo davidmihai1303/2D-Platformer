@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "World.hpp"
 #include "InputState.hpp"
+#include "Constants.hpp"
 
 class Game {
 public:

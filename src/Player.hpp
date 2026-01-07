@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 #include "InputState.hpp"
+#include "Constants.hpp"
 
 class Player final : public Entity {
 public:
@@ -50,8 +51,8 @@ private:
     InputState m_inputState;
     sf::Vector2f m_movement;
     bool m_onGround;
-    sf::Time m_cooldownAttackTime = sf::seconds(.5f);
-    sf::Time m_activeAttackTime = sf::seconds(.56f); //TODO experiment with other values
+    sf::Time m_cooldownAttackTime = sf::seconds(Constants::Player::AttackCooldown);
+    sf::Time m_activeAttackTime = sf::seconds(Constants::Player::ActiveAttackDuration);
 
     // Code=1
     sf::RectangleShape attackingShape;
