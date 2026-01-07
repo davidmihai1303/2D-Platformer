@@ -37,9 +37,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attacking_currentFrame(0),
     m_attacking_animDuration(0.07f), //TODO
     m_attacking_elapsedTime(0.f),
-    m_attacking_numFrames(8)
-{
-
+    m_attacking_numFrames(8) {
     // Create the player's hitbox
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Transparent);
@@ -127,7 +125,7 @@ void Player::movementLogic(const sf::Time dt) {
 
         // Also make the animation move faster
         m_walking_animDuration = 0.1f / 1.71f;
-    }else
+    } else
         m_walking_animDuration = 0.1f;
 
     if (!m_inputState.shiftDown && m_onGround)
@@ -250,7 +248,7 @@ void Player::animationLogic(const sf::Time dt) {
 
         m_attacking_elapsedTime = 0.f;
         m_attacking_currentFrame = 0;
-    } else if (m_isMoving) {
+    } else {
         m_animationToDraw = 1; // Tell which sprite to draw
         walkingAnimation(dt); // Animation logic
 
@@ -327,7 +325,7 @@ void Player::attackingAnimation(const sf::Time dt) {
         m_attacking_currentFrame++; // next frame
 
         if (m_attacking_currentFrame >= m_attacking_numFrames)
-                m_attacking_currentFrame = 0;
+            m_attacking_currentFrame = 0;
 
         const long long leftAux = m_attacking_currentFrame * m_attacking_frameSize.x;
         int left = static_cast<int>(leftAux);
