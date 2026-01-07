@@ -62,6 +62,15 @@ private:
 
     // -----------
 
+
+    // --- Enemy textures:
+
+    TextureHolder m_spiderWalkingTexture;
+
+    // -----------
+
+
+
     void addNotes();
 
 };

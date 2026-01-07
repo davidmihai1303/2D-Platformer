@@ -39,14 +39,23 @@ namespace Constants {
         inline constexpr float ActiveAttackDuration = 0.56f; //TODO experiment with other values
         inline constexpr float RunningAttackBoost = 1.25f;
 
-
         namespace Animation {
             inline constexpr float StandingAnimDuration = 0.2f;
             inline constexpr float WalkingAnimDuration = 0.1f;
-            inline constexpr float AttackingAnimDuration = 0.07f;  //TODO experiment with other values
+            inline constexpr float AttackingAnimDuration = 0.07f; //TODO experiment with other values
             inline constexpr unsigned int StandingFrameCount = 8;
             inline constexpr unsigned int WalkingFrameCount = 8;
             inline constexpr unsigned int AttackingFrameCount = 8;
+        }
+    }
+
+    namespace Spider {
+        // Hitbox
+        inline constexpr float HitboxWidth = 50.f;
+        inline constexpr float HitboxHeight = 50.f;
+        namespace Animation {
+            inline constexpr float WalkingAnimDuration = 0.1f;
+            inline constexpr unsigned int WalkingFrameCount = 4;
         }
     }
 

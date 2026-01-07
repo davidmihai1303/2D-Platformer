@@ -51,6 +51,7 @@ protected:
     // Player default = True / Right
     // Enemy default = False / Left (this will be revised. Code=3)
     bool m_currentFacingDirection;
+    bool m_lastFacingDirection;
 };
 
 

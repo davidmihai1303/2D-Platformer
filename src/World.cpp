@@ -7,13 +7,15 @@
 World::World(sf::RenderWindow &window) : m_window(window),
                                          m_playerStandingTexture("../resources/sprites/aeris_standing_animation_spritesheet.png"),
                                          m_playerWalkingTexture("../resources/sprites/aeris_walking_animation_spritesheet.png"),
-                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet4.png"){
+                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet4.png"),
+                                         m_spiderWalkingTexture("../resources/sprites/spider_walking_animation_spritesheet.png")
+{
     // Create player
     m_entities.push_back(std::make_unique<Player>(m_playerStandingTexture.get(), m_playerWalkingTexture.get(), m_playerAttackingTexture.get()));
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
 
     // Create an enemy
-    auto enemy = std::make_unique<Enemy>(sf::Vector2f{400.f, 500.f}, sf::Vector2f{50.f, 50.f});
+    auto enemy = std::make_unique<Enemy>(sf::Vector2f{400.f, 500.f}, sf::Vector2f{50.f, 50.f}, m_spiderWalkingTexture.get());
     m_entities.push_back(std::move(enemy));
 
     // Being unique pointers, enemy and player will be automatically deleted after the constructor is finished

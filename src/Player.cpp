@@ -13,7 +13,6 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attackingSprite(attackingTexture),
 
     m_onGround(false),
-    m_lastFacingDirection(true),
     m_frozenVelocity(sf::Vector2f(0, 0)),
     m_isFrozen(false),
     m_shiftFromGround(false),
@@ -38,11 +37,14 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attacking_animDuration(Constants::Player::Animation::AttackingAnimDuration),
     m_attacking_elapsedTime(0.f),
     m_attacking_numFrames(Constants::Player::Animation::AttackingFrameCount) {
+
+
     // Create the player's hitbox
     m_shape.setSize(sf::Vector2f({Constants::Player::HitboxWidth, Constants::Player::HitboxHeight}));
     m_shape.setFillColor(Constants::Player::HitboxColor);
     m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
+    m_lastFacingDirection = true;
 
     // -------- STANDING ANIMATION --------
     // CALCULATE FRAME SIZE
@@ -56,7 +58,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     }); //origin in the middle bottom with offset to match the body
 
     //     --------- WALKING ANIMATION --------
-    const sf::Vector2u walkingTextureSize = standingTexture.getSize();
+    const sf::Vector2u walkingTextureSize = walkingTexture.getSize();
     m_walking_frameSize = sf::Vector2u(walkingTextureSize.x / m_walking_numFrames, walkingTextureSize.y);
     m_walkingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_walking_frameSize)));
     m_walkingSprite.setOrigin({
@@ -79,6 +81,7 @@ void Player::update(const sf::Time dt) {
 
     // To have access to the player's position at all times without auxiliary func
     m_position = m_shape.getPosition();
+    m_lastFacingDirection = m_currentFacingDirection; // update for next frame
 }
 
 void Player::movementLogic(const sf::Time dt) {
@@ -178,7 +181,6 @@ void Player::attackingLogic() {
             m_activeAttackClock.reset();
         }
     }
-    m_lastFacingDirection = m_currentFacingDirection; // update for next frame
 
     // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area

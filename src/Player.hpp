@@ -56,7 +56,6 @@ private:
 
     // Code=1
     sf::RectangleShape attackingShape;
-    bool m_lastFacingDirection;
 
     // Attacking in-air helpers
     sf::Vector2f m_frozenVelocity;
