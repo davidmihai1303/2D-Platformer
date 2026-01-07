@@ -19,7 +19,7 @@ private:
 
     void updateView(float x, float y);
 
-    void updateCamera();
+    void updateCamera(sf::Time dt);
 
     sf::RenderWindow m_window;
     sf::View m_view;

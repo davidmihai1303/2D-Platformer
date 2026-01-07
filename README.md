@@ -1,6 +1,6 @@
 # Sound Fugue
 
-![Gameplay GIF placeholder](https://via.placeholder.com/800x450.png?text=Gameplay+GIF+Coming+Soon)
+![Gameplay GIF placeholder](resources/aeris_standing_animation_gif.gif)
 
 `Sound Fugue` is a 2D platformer built for high-speed, fluid movement, heavily inspired by titles like *Rayman Origins*. The entire world is built from music.
 
@@ -28,8 +28,9 @@ The mission is to travel to the "Genre Worlds" - lands that are now silent versi
 
 This is a passion project built as a deep-dive into C++ and SFML 3. It is **currently in active development.**
 
-The current development focus is on perfecting Aeris' core physics and movement.
+Aeris' core physics and movement have been finished.
 
+The current development focus is on developing the world.
 
 ---
 

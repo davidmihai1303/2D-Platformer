@@ -7,7 +7,7 @@
 World::World(sf::RenderWindow &window) : m_window(window),
                                          m_playerStandingTexture("../resources/sprites/aeris_standing_animation_spritesheet.png"),
                                          m_playerWalkingTexture("../resources/sprites/aeris_walking_animation_spritesheet.png"),
-                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet.png"){
+                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet4.png"){
     // Create player
     m_entities.push_back(std::make_unique<Player>(m_playerStandingTexture.get(), m_playerWalkingTexture.get(), m_playerAttackingTexture.get()));
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
@@ -141,12 +141,12 @@ void World::addNotes() {
     for (auto &pos: positions)
         m_notes.push_back(std::make_unique<Note>(pos));
 }
-
-std::ostream &operator<<(std::ostream &os, const World &w) {
-    os << "World:\n";
-    os << " Player -> " << *w.m_player << "\n";
-    for (const auto &e: w.m_entities)
-        if (e.get() != w.m_player)
-            os << " Enemy -> " << *e << "\n";
-    return os;
-}
+//
+// std::ostream &operator<<(std::ostream &os, const World &w) {
+//     os << "World:\n";
+//     os << " Player -> " << *w.m_player << "\n";
+//     for (const auto &e: w.m_entities)
+//         if (e.get() != w.m_player)
+//             os << " Enemy -> " << *e << "\n";
+//     return os;
+// }

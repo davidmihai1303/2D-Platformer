@@ -3,6 +3,7 @@
 //
 
 #include "Player.hpp"
+#include <cmath>
 
 Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTexture,
                const sf::Texture &attackingTexture) :
@@ -36,13 +37,14 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attacking_currentFrame(0),
     m_attacking_animDuration(0.07f), //TODO
     m_attacking_elapsedTime(0.f),
-    m_attacking_numFrames(8) {
+    m_attacking_numFrames(8)
+{
+
     // Create the player's hitbox
     m_shape.setSize(sf::Vector2f({50.f, 100.f}));
     m_shape.setFillColor(sf::Color::Transparent);
     m_shape.setPosition({0.f, 250.f});
     m_currentFacingDirection = true; // Different from all the other entities (enemies)
-
 
     // -------- STANDING ANIMATION --------
     // CALCULATE FRAME SIZE
@@ -52,7 +54,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     // Set the first frame
     m_standingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_standing_frameSize)));
     m_standingSprite.setOrigin({
-        m_standing_frameSize.x / 2 + 5.f, static_cast<float>(m_standing_frameSize.y)
+        static_cast<float>(m_standing_frameSize.x) / 2 + 5.f, static_cast<float>(m_standing_frameSize.y)
     }); //origin in the middle bottom with offset to match the body
 
     //     --------- WALKING ANIMATION --------
@@ -60,7 +62,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_walking_frameSize = sf::Vector2u(walkingTextureSize.x / m_walking_numFrames, walkingTextureSize.y);
     m_walkingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_walking_frameSize)));
     m_walkingSprite.setOrigin({
-        m_walking_frameSize.x / 2 + 5.f, static_cast<float>(m_walking_frameSize.y)
+        static_cast<float>(m_walking_frameSize.x) / 2 + 5.f, static_cast<float>(m_walking_frameSize.y)
     }); //origin in the middle bottom with offset to match the body
 
     //    --------- ATTACKING ANIMATION --------
@@ -68,7 +70,7 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attacking_frameSize = sf::Vector2u(attackingTextureSize.x / m_attacking_numFrames, attackingTextureSize.y);
     m_attackingSprite.setTextureRect(sf::IntRect({0, 0}, sf::Vector2<int>(m_attacking_frameSize)));
     m_attackingSprite.setOrigin({
-        m_standing_frameSize.x / 2 + 5.f, static_cast<float>(m_attacking_frameSize.y)
+        static_cast<float>(m_standing_frameSize.x) / 2 + 5.f, static_cast<float>(m_attacking_frameSize.y)
     }); // We keep the same x from the standing/walking animation
 }
 
@@ -117,12 +119,16 @@ void Player::movementLogic(const sf::Time dt) {
     if (!m_isFrozen)
         m_velocity.y += gravity * dt.asSeconds(); // Make sure gravity doesn't stack up while frozen in-air
 
-    // Running Logic
+    // Sprint Logic
     if (m_inputState.shiftDown) {
         m_movement.x *= 1.71f; //TODO experiment with other values
         if (m_onGround)
             m_shiftFromGround = true;
-    }
+
+        // Also make the animation move faster
+        m_walking_animDuration = 0.1f / 1.71f;
+    }else
+        m_walking_animDuration = 0.1f;
 
     if (!m_inputState.shiftDown && m_onGround)
         m_shiftFromGround = false;
@@ -137,8 +143,13 @@ void Player::movementLogic(const sf::Time dt) {
     }
 
     // Smoothen dash attack so it decreases in speed over time
-    if (m_dashAttack)
-        m_velocity.x *= 0.985f; //TODO experiment with other values
+    if (m_dashAttack) {
+        // Using this so we don't need exactly 60 frames epr second
+        // We want to apply 0.985 roughly 60 times per second
+        // Formula: factor ^ (60 * dt)
+        float friction = std::pow(0.985f, 60.f * dt.asSeconds());
+        m_velocity.x *= friction;
+    }
 
     // Move horizontally and vertically
     m_shape.move((m_movement + m_velocity) * dt.asSeconds());
@@ -178,7 +189,7 @@ void Player::attackingLogic() {
     // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area
     attackingShape.setSize(sf::Vector2f({40.f, 65.f}));
-    attackingShape.setFillColor(sf::Color::Blue);
+    attackingShape.setFillColor(sf::Color::Transparent);
     if (m_currentFacingDirection) {
         // facing right
         attackingShape.setOrigin({0.f, 0.f}); // Set origin back to default
@@ -397,12 +408,12 @@ void Player::resetDash() {
 // -------
 
 
-std::ostream &operator<<(std::ostream &os, const Player &p) {
-    os << "Player{";
-    os << static_cast<const Entity &>(p); // apelează operatorul din Entity
-    os << ", attacking=" << (p.m_isAttacking ? "true" : "false");
-    os << ", sprite= " << p.m_standingSprite.getLocalBounds().size.x << ", " << p.m_standingSprite.getLocalBounds().size
-            .y;
-    os << "}";
-    return os;
-}
+// std::ostream &operator<<(std::ostream &os, const Player &p) {
+//     os << "Player{";
+//     os << static_cast<const Entity &>(p); // apelează operatorul din Entity
+//     os << ", attacking=" << (p.m_isAttacking ? "true" : "false");
+//     os << ", sprite= " << p.m_standingSprite.getLocalBounds().size.x << ", " << p.m_standingSprite.getLocalBounds().size
+//             .y;
+//     os << "}";
+//     return os;
+// }

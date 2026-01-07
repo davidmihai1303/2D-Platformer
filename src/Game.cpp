@@ -4,6 +4,7 @@
 
 #include "Game.hpp"
 #include <iostream>
+#include <cmath>
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
                m_view({960.f, 540.f}, {1920.f, 1080.f}),
@@ -11,7 +12,7 @@ Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
 }
 
 void Game::run() {
-    m_window.setFramerateLimit(m_fps);
+   // m_window.setFramerateLimit(m_fps);
     m_window.setView(m_view);
     sf::Clock clock;
     while (m_window.isOpen()) {
@@ -23,14 +24,14 @@ void Game::run() {
 
         processEvents();
         m_world.update(dt, m_inputState);
-        updateCamera();
+        updateCamera(dt);
 
         m_window.setView(m_view);
 
         m_window.clear();
         m_world.draw();
         m_window.display();
-        std::cout << m_world;
+//        std::cout << m_world;
     }
 }
 
@@ -96,11 +97,20 @@ void Game::updateView(const float x, const float y) {
     m_window.setView(m_view);
 }
 
-void Game::updateCamera() {
+void Game::updateCamera(const sf::Time dt) {
     // Camera follows the player, but with added delay to make it more fluid
     const sf::Vector2f currentCenter = m_view.getCenter();
     const sf::Vector2f target = m_world.getPlayerPosition();
-    constexpr float smoothing = 0.04f; // between 0 and 1, //TODO experiment with values between 0.01 and 0.1
+
+    // We want to smooth by 0.04 (4%) 60 times in a second
+    // This means we retain 0.96 (96%) of the distance.
+    constexpr float friction = 1.0f - 0.04f; // 0.96f
+
+    // Calculate how much distance to retain for this specific dt
+    const float frameDamping = std::pow(friction, 60.f * dt.asSeconds());
+
+    // Invert it to get the movement amount
+    const float smoothing = 1.0f - frameDamping;
+
     m_view.setCenter(currentCenter + (target - currentCenter) * smoothing);
-    //TODO - make it frame rate independent
 }
