@@ -13,7 +13,6 @@ Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTex
     m_attackingSprite(attackingTexture),
 
     m_onGround(false),
-    m_frozenVelocity(sf::Vector2f(0, 0)),
     m_isFrozen(false),
     m_shiftFromGround(false),
     m_dashAttack(false),
@@ -168,7 +167,7 @@ void Player::attackingLogic() {
         m_activeAttackClock.reset();
         m_isAttacking = false;
         if (m_isFrozen) {
-            m_velocity = m_frozenVelocity; // Restore pre-attack motion
+            m_velocity = {0.f, 0.f}; // Restore pre-attack motion
             m_isFrozen = false;
         }
         m_dashAttack = false;
@@ -182,7 +181,6 @@ void Player::attackingLogic() {
         }
     }
 
-    // Code=1
     // Draw a rectangle representing the hitbox of the Hit-Area
     attackingShape.setSize(sf::Vector2f({Constants::Player::AttackingHitboxWidth, Constants::Player::AttackingHitboxHeight}));
     attackingShape.setFillColor(Constants::Player::AttackingHitboxColor);
@@ -195,12 +193,14 @@ void Player::attackingLogic() {
         attackingShape.setOrigin({attackingShape.getLocalBounds().size.x, 0.f}); // Set origin to the top-right corner
         attackingShape.setPosition(m_shape.getPosition());
     }
+    if (m_inputState.hasClicked) {
+        attack();
+    }
 }
 
 void Player::attack() {
     // if cooldown has passed
-    if (m_cooldownAttackClock.getElapsedTime() == sf::Time::Zero && m_activeAttackClock.getElapsedTime() <=
-        m_activeAttackTime) {
+    if (m_cooldownAttackClock.getElapsedTime() == sf::Time::Zero && m_activeAttackClock.getElapsedTime() <= m_activeAttackTime) {
         m_isAttacking = true;
         m_cooldownAttackClock.start();
         // Using restart() to be able to spam-attack
@@ -218,7 +218,6 @@ void Player::attack() {
                 m_velocity.y = 0.f;
             } else {
                 // Neutral jump -> classic freeze in air
-                m_frozenVelocity = m_velocity;
                 m_velocity = {0.f, 0.f};
             }
         }

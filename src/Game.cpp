@@ -8,14 +8,21 @@
 #include "Constants.hpp"
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
-               m_view({Constants::Window::ViewCenterX, Constants::Window::ViewCenterY}, {Constants::Window::Width, Constants::Window::Height}),
+               m_view({Constants::Window::ViewCenterX, Constants::Window::ViewCenterY}, {
+                          Constants::Window::Width, Constants::Window::Height
+                      }),
                m_world(m_window) {
 }
 
 void Game::run() {
-   // m_window.setFramerateLimit(m_fps);
+    m_window.setFramerateLimit(Constants::FrameRateLimit);
+    m_window.setVerticalSyncEnabled(false);
     m_window.setView(m_view);
     sf::Clock clock;
+
+    sf::Clock fpsTimer; // Renamed 'aux' to be clearer
+    int frameCounter = 0; // NEW: Count frames manually    clock.restart();
+
     while (m_window.isOpen()) {
         sf::Time dt = clock.restart();
 
@@ -32,12 +39,23 @@ void Game::run() {
         m_window.clear();
         m_world.draw();
         m_window.display();
-//        std::cout << m_world;
+        //        std::cout << m_world;
+
+        frameCounter++;
+
+        if (fpsTimer.getElapsedTime().asSeconds() >= 1.0f) {
+            m_window.setTitle("SoundFugue | FPS: " + std::to_string(frameCounter));
+
+            // Reset for the next second
+            frameCounter = 0;
+            fpsTimer.restart();
+        }
     }
 }
 
 
 void Game::processEvents() {
+    m_inputState.hasClicked = false;
     while (auto event = m_window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
             m_window.close();
@@ -45,8 +63,8 @@ void Game::processEvents() {
             updateView(static_cast<float>(resize->size.x), static_cast<float>(resize->size.y));
         } else if (auto *button = event->getIf<sf::Event::MouseButtonPressed>()) {
             if (button->button == sf::Mouse::Button::Left) {
-                m_world.playerAttack(); // triggers once
                 m_inputState.clickDown = true;
+                m_inputState.hasClicked = true;
                 if (m_inputState.shiftDown && m_inputState.firstPressed == '0')
                     m_inputState.firstPressed = 's';
             }

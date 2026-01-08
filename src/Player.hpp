@@ -58,7 +58,6 @@ private:
     sf::RectangleShape attackingShape;
 
     // Attacking in-air helpers
-    sf::Vector2f m_frozenVelocity;
     bool m_isFrozen;
 
     bool m_shiftFromGround;    // If you pressed Shift while you were on ground

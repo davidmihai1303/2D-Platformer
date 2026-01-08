@@ -6,6 +6,7 @@
 #define SOUNDFUGUE_CONSTANTS_HPP
 
 namespace Constants {
+    inline constexpr unsigned int FrameRateLimit = 540;
     namespace Window {
         inline constexpr float Width = 1920.f;
         inline constexpr float Height = 1080.f;
@@ -29,10 +30,10 @@ namespace Constants {
         // Hitbox
         inline constexpr float HitboxWidth = 50.f;
         inline constexpr float HitboxHeight = 100.f;
-        inline sf::Color HitboxColor = sf::Color::Green;
+        inline sf::Color HitboxColor = sf::Color::Transparent;
         inline constexpr float AttackingHitboxWidth = 40.f;
         inline constexpr float AttackingHitboxHeight = 65.f;
-        inline sf::Color AttackingHitboxColor = sf::Color::Blue;
+        inline sf::Color AttackingHitboxColor = sf::Color::Transparent;
 
         // Combat
         inline constexpr float AttackCooldown = 0.5f;

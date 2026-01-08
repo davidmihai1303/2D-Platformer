@@ -9,6 +9,7 @@ struct InputState {
     bool shiftDown = false;
     bool clickDown = false;
     char firstPressed = '0'; // 's' = shift first, 'c' = click first, '0' = none
+    bool hasClicked = false;
 };
 
 #endif //SOUNDFUGUE_INPUTSTATE_HPP

@@ -7,7 +7,6 @@
 #include <SFML/Graphics.hpp>
 #include "World.hpp"
 #include "InputState.hpp"
-#include "Constants.hpp"
 
 class Game {
 public:
@@ -25,8 +24,6 @@ private:
     sf::RenderWindow m_window;
     sf::View m_view;
     World m_world;
-   // const unsigned int m_fps = 60;
-
     InputState m_inputState;
 };
 

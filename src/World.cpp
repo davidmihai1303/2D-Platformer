@@ -7,7 +7,7 @@
 World::World(sf::RenderWindow &window) : m_window(window),
                                          m_playerStandingTexture("../resources/sprites/aeris_standing_animation_spritesheet.png"),
                                          m_playerWalkingTexture("../resources/sprites/aeris_walking_animation_spritesheet.png"),
-                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet4.png"),
+                                         m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet.png"),
                                          m_spiderWalkingTexture("../resources/sprites/spider_walking_animation_spritesheet.png")
 {
     // Create player
@@ -21,7 +21,7 @@ World::World(sf::RenderWindow &window) : m_window(window),
     // Being unique pointers, enemy and player will be automatically deleted after the constructor is finished
     // Their ownership is moved to the entities list
 
-    m_ground.setSize({3000.f, 50.f});
+    m_ground.setSize({6000.f, 50.f});
     m_ground.setFillColor(sf::Color(100, 60, 30));
     m_ground.setPosition({-500.f, 550.f});
 
@@ -111,11 +111,6 @@ void World::collision_player_notes(const sf::FloatRect &playerBounds) {
             const sf::FloatRect noteBounds = (*n).getBounds();
             return playerBounds.findIntersection(noteBounds).has_value();
         });
-}
-
-// Helper func for the attack logic in the Game class
-void World::playerAttack() {
-    (*m_player).attack();
 }
 
 // Helper func for the camera logic in the Game class
