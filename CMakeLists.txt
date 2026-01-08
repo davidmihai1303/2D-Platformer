@@ -43,7 +43,7 @@ FetchContent_MakeAvailable(SFML)
 ###############################################################################
 
 # Define where the tmxlite external folder is
-set(TMXLITE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/external/tmxlite")
+set(TMXLITE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/ext/tmxlite")
 set(TMXLITE_SRC_DIR "${TMXLITE_ROOT}/src")
 
 # Combine the sources from the tmxlite CMake snippet you provided
@@ -67,7 +67,7 @@ set(TMXLITE_SOURCES
 add_library(tmxlite STATIC ${TMXLITE_SOURCES})
 
 # Add the include directory so you can use #include <tmxlite/Map.hpp>
-# This points to 'external/tmxlite', which contains the 'tmxlite' folder with headers.
+# This points to 'ext/tmxlite', which contains the 'tmxlite' folder with headers.
 target_include_directories(tmxlite PUBLIC "${TMXLITE_ROOT}")
 
 # (Optional) Ensure tmxlite knows where its own internal headers are if needed,

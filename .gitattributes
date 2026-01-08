@@ -2,4 +2,3 @@ ext/** linguist-vendored
 *.png linguist-vendored
 *.json linguist-vendored
 *.tmx linguist-vendored
-external/** linguist-vendored
