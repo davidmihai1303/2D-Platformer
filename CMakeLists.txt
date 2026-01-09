@@ -74,6 +74,10 @@ target_include_directories(tmxlite PUBLIC "${TMXLITE_ROOT}")
 # though usually relative paths in source handle this.
 target_include_directories(tmxlite PRIVATE "${TMXLITE_SRC_DIR}")
 
+
+# Enable sanitizers for tmxlite (fixes MSVC LNK2038) but skip strict warnings
+set_custom_stdlib_and_sanitizers(tmxlite TRUE)
+
 ###############################################################################
 # System Dependencies
 ###############################################################################
