@@ -14,6 +14,7 @@
 #include "InputState.hpp"
 #include "TextureHolder.hpp"
 #include <ostream>
+#include <tmxlite/Map.hpp>
 
 class World {
 public:
@@ -69,6 +70,11 @@ private:
 
     // -----------
 
+    // --- Map:
+
+    tmx::Map m_map;
+
+    // ----------
 
 
     void addNotes();
