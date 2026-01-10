@@ -112,6 +112,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/Note.hpp
         src/InputState.hpp
         src/Constants.hpp
+        src/MapHelper.cpp
+        src/MapHelper.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
