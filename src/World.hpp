@@ -15,6 +15,7 @@
 #include "TextureHolder.hpp"
 #include <ostream>
 #include <tmxlite/Map.hpp>
+#include "MapLayer.hpp"
 
 class World {
 public:
@@ -72,8 +73,9 @@ private:
 
     // --- Map:
 
+    // In World.hpp private section
     tmx::Map m_map;
-
+    std::vector<std::unique_ptr<MapLayer>> m_mapLayers; // Holds the visual geometry
     // ----------
 
 

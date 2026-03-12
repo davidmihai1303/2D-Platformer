@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cmath>
 #include "Constants.hpp"
+#include <tmxlite/Map.hpp>
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),
                m_view({Constants::Window::ViewCenterX, Constants::Window::ViewCenterY}, {

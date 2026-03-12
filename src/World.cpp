@@ -10,9 +10,17 @@ World::World(sf::RenderWindow &window) : m_window(window),
                                          m_playerAttackingTexture("../resources/sprites/aeris_attacking_animation_spritesheet.png"),
                                          m_spiderWalkingTexture("../resources/sprites/spider_walking_animation_spritesheet.png")
 {
+    if (m_map.load("../resources/maps/untitled.tmx")) {
+        const auto& layers = m_map.getLayers();
 
-    m_map.load("../assets/demo.tmx");
-
+        for (std::size_t i = 0; i < layers.size(); ++i) {
+            // 2. Only create a MapLayer if the Tiled layer is a "Tile" type
+            if (layers[i]->getType() == tmx::Layer::Type::Tile) {
+                // This triggers the internal generateGeometry() once
+                m_mapLayers.push_back(std::make_unique<MapLayer>(m_map, i));
+            }
+        }
+    }
     // Create player
     m_entities.push_back(std::make_unique<Player>(m_playerStandingTexture.get(), m_playerWalkingTexture.get(), m_playerAttackingTexture.get()));
     m_player = dynamic_cast<Player *>(m_entities.back().get()); // We keep a raw pointer to access Player faster
@@ -33,6 +41,11 @@ World::World(sf::RenderWindow &window) : m_window(window),
 }
 
 void World::update(const sf::Time dt, const InputState &inputState) {
+    // Add this: Update map animations
+    for (const auto& layer : m_mapLayers) {
+        layer->update(dt);
+    }
+
     for (const auto &e: m_entities)
         (*e).update(dt);
     // It uses its own specific update func (the one with override)
@@ -124,6 +137,11 @@ sf::Vector2f World::getPlayerPosition() const {
 }
 
 void World::draw() const {
+    // 1. Draw Background Map Layers first
+    for (const auto& layer : m_mapLayers) {
+        m_window.draw(*layer);
+    }
+
     m_window.draw(m_ground);
 
     // Draw all entities
