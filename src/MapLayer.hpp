@@ -178,23 +178,31 @@ private:
 
                         // Calculate where the graphic is on the spritesheet
                         const std::uint32_t localID = tileID - layer->firstGID;
-                        const std::uint32_t texX = (localID % layer->texTileCount.x) * layer->texTileSize.x;
-                        const std::uint32_t texY = (localID / layer->texTileCount.x) * layer->texTileSize.y;
 
-                        // Create the 6 vertices (2 triangles)
+                        // Cast these to floats here to keep the Vertex code clean and prevent narrowing warnings
+                        const float texX = static_cast<float>((localID % layer->texTileCount.x) * layer->texTileSize.x);
+                        const float texY = static_cast<float>((localID / layer->texTileCount.x) * layer->texTileSize.y);
+                        const float texW = static_cast<float>(layer->texTileSize.x);
+                        const float texH = static_cast<float>(layer->texTileSize.y);
+
+                        // Create the 6 vertices (2 triangles) using SFML 3 brace initialization {}
                         sf::Vertex v[6];
-                        v[0] = sf::Vertex(pos, sf::Color::White, sf::Vector2f(texX, texY));
+                        v[0] = sf::Vertex{pos, sf::Color::White, sf::Vector2f(texX, texY)};
 
-                        v[1] = sf::Vertex(pos + sf::Vector2f(layer->texTileSize.x, 0),
-                            sf::Color::White,
-                            sf::Vector2f(texX + layer->texTileSize.x, texY));
-                        v[2] = sf::Vertex(pos + sf::Vector2f(layer->texTileSize.x, layer->texTileSize.y),
+                        v[1] = sf::Vertex{pos + sf::Vector2f(texW, 0.f),
                                           sf::Color::White,
-                                          sf::Vector2f(texX + layer->texTileSize.x, texY + layer->texTileSize.y));
+                                          sf::Vector2f(texX + texW, texY)};
+
+                        v[2] = sf::Vertex{pos + sf::Vector2f(texW, texH),
+                                          sf::Color::White,
+                                          sf::Vector2f(texX + texW, texY + texH)};
+
                         v[3] = v[0];
                         v[4] = v[2];
-                        v[5] = sf::Vertex(pos + sf::Vector2f(0, layer->texTileSize.y), sf::Color::White,
-                                          sf::Vector2f(texX, texY + layer->texTileSize.y));
+
+                        v[5] = sf::Vertex{pos + sf::Vector2f(0.f, texH),
+                                          sf::Color::White,
+                                          sf::Vector2f(texX, texY + texH)};
 
                         // Apply standard Tiled flip math
                         applyFlips(m_tileIDs[idx].flipFlags, v);
