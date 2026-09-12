@@ -41,17 +41,17 @@ World::World(sf::RenderWindow &window) : m_window(window),
 }
 
 void World::update(const sf::Time dt, const InputState &inputState) {
-    // Add this: Update map animations
+    // Update map animations
     for (const auto& layer : m_mapLayers) {
         layer->update(dt);
     }
 
+    if (m_player)
+        (*m_player).setInputState(inputState);
+
     for (const auto &e: m_entities)
         (*e).update(dt);
     // It uses its own specific update func (the one with override)
-
-    if (m_player)
-        (*m_player).setInputState(inputState);
 
     handleCollisions();
 }
@@ -61,7 +61,11 @@ void World::handleCollisions() {
 
     // passed through reference to avoid creating+deleting chunks of memory repeatedly
     collision_player_ground(playerBounds);
+    // set the bounds again in case the player moves
+    playerBounds = (*m_player).getBounds();
     collision_player_enemies(playerBounds);
+
+    playerBounds = (*m_player).getBounds();
     collision_player_notes(playerBounds);
 }
 
@@ -95,6 +99,7 @@ void World::collision_player_enemies(const sf::FloatRect &playerBounds) {
             // simple reaction: reset player position
             (*m_player).setPosition({100.f, 100.f});
             (*m_player).setVelocity({(*m_player).getVelocity().x, 0.f});
+            return;
         }
     }
 

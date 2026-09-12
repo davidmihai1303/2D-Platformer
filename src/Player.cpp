@@ -78,8 +78,6 @@ void Player::update(const sf::Time dt) {
     attackingLogic();
     animationLogic(dt);
 
-    // To have access to the player's position at all times without auxiliary func
-    m_position = m_shape.getPosition();
     m_lastFacingDirection = m_currentFacingDirection; // update for next frame
 }
 

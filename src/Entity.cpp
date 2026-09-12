@@ -5,7 +5,7 @@
 #include "Entity.hpp"
 
 Entity::Entity()
-    : m_position(0.f, 0.f), m_velocity(0.f, 0.f), m_isMoving(false), m_isAttacking(false),
+    : m_velocity(0.f, 0.f), m_isMoving(false), m_isAttacking(false),
       m_currentFacingDirection(false) {
     // Set the clocks on stop and time=0 by default
     m_activeAttackClock.reset();
@@ -13,7 +13,7 @@ Entity::Entity()
 }
 
 sf::Vector2f Entity::getPosition() const {
-    return m_position;
+    return m_shape.getPosition();
 }
 
 bool Entity::getAttackingState() const {

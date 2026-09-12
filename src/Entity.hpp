@@ -37,7 +37,6 @@ public:
 
 protected:
     sf::RectangleShape m_shape;
-    sf::Vector2f m_position;
     sf::Vector2f m_velocity;
 
     bool m_isMoving;

@@ -37,9 +37,6 @@ void Enemy::update(const sf::Time dt) {
     movementLogic(dt);
     animationLogic(dt);
 
-    // To have access to the enemy's position at all times without auxiliary func
-    m_position = m_shape.getPosition();
-
     m_lastFacingDirection = m_currentFacingDirection; // update for next frame
 }
 
