@@ -6,9 +6,9 @@
 #define SOUNDFUGUE_PLAYER_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Entity.hpp"
-#include "InputState.hpp"
-#include "Constants.hpp"
+#include "entities/Entity.hpp"
+#include "game/InputState.hpp"
+#include "game/Constants.hpp"
 
 class Player final : public Entity {
 public:

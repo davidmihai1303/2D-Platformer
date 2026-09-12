@@ -6,7 +6,7 @@
 #define SOUNDFUGUE_ENEMY_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Entity.hpp"
+#include "entities/Entity.hpp"
 
 class Enemy : public Entity {
 public:

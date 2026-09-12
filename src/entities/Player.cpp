@@ -2,7 +2,7 @@
 // Created by david on 10/31/2025.
 //
 
-#include "Player.hpp"
+#include "entities/Player.hpp"
 #include <cmath>
 
 Player::Player(const sf::Texture &standingTexture, const sf::Texture &walkingTexture,

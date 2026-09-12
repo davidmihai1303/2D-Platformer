@@ -2,10 +2,10 @@
 // Created by david on 10/31/2025.
 //
 
-#include "Game.hpp"
+#include "game/Game.hpp"
 #include <iostream>
 #include <cmath>
-#include "Constants.hpp"
+#include "game/Constants.hpp"
 #include <tmxlite/Map.hpp>
 
 Game::Game() : m_window(sf::VideoMode({1920, 1080}), "SoundFugue"),

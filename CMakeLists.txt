@@ -95,24 +95,30 @@ endif()
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
         src/main.cpp
-        src/Player.cpp
-        src/Player.hpp
-        src/Game.cpp
-        src/Game.hpp
-        src/World.cpp
-        src/World.hpp
 
-        src/Enemy.cpp
-        src/Enemy.hpp
-        src/TextureHolder.cpp
-        src/TextureHolder.hpp
-        src/Entity.cpp
-        src/Entity.hpp
-        src/Note.cpp
-        src/Note.hpp
-        src/InputState.hpp
-        src/Constants.hpp
-        src/MapLayer.hpp
+        src/game/Game.cpp
+        src/game/Game.hpp
+        src/game/World.cpp
+        src/game/World.hpp
+        src/game/InputState.hpp
+        src/game/Constants.hpp
+
+        src/entities/Player.cpp
+        src/entities/Player.hpp
+        src/entities/Enemy.cpp
+        src/entities/Enemy.hpp
+        src/entities/Entity.cpp
+        src/entities/Entity.hpp
+        src/entities/Note.cpp
+        src/entities/Note.hpp
+
+        src/graphics/TextureHolder.cpp
+        src/graphics/TextureHolder.hpp
+        src/graphics/MapLayer.hpp
+
+        src/terrain/TerrainCollision.cpp
+        src/terrain/TerrainCollision.hpp
+        src/terrain/TerrainContacts.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
@@ -122,6 +128,8 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 ###############################################################################
 # Linking and Include Configuration
 ###############################################################################
+
+target_include_directories(${MAIN_EXECUTABLE_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # use SYSTEM so cppcheck and clang-tidy do not report warnings from these directories
 target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)

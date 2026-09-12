@@ -2,7 +2,7 @@
 // Created by david on 11/6/2025.
 //
 
-#include "Note.hpp"
+#include "entities/Note.hpp"
 
 Note::Note(const sf::Vector2f &position){
     m_shape.setSize(sf::Vector2f(20.f, 20.f));

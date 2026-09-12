@@ -2,7 +2,7 @@
 // Created by david on 11/2/2025.
 //
 
-#include "TextureHolder.hpp"
+#include "graphics/TextureHolder.hpp"
 #include <iostream>
 
 TextureHolder::TextureHolder(const std::string &path) {

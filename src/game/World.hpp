@@ -7,15 +7,15 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <memory>
-#include "Player.hpp"
-#include "Enemy.hpp"
-#include "Entity.hpp"
-#include "Note.hpp"
-#include "InputState.hpp"
-#include "TextureHolder.hpp"
+#include "entities/Player.hpp"
+#include "entities/Enemy.hpp"
+#include "entities/Entity.hpp"
+#include "entities/Note.hpp"
+#include "game/InputState.hpp"
+#include "graphics/TextureHolder.hpp"
 #include <ostream>
 #include <tmxlite/Map.hpp>
-#include "MapLayer.hpp"
+#include "graphics/MapLayer.hpp"
 
 class World {
 public:

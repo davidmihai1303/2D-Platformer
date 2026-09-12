@@ -2,7 +2,7 @@
 // Created by david on 11/1/2025.
 //
 #include <algorithm>
-#include "World.hpp"
+#include "game/World.hpp"
 
 World::World(sf::RenderWindow &window) : m_window(window),
                                          m_playerStandingTexture("../resources/sprites/aeris_standing_animation_spritesheet.png"),

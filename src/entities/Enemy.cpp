@@ -2,8 +2,8 @@
 // Created by david on 11/2/2025.
 //
 
-#include "Enemy.hpp"
-#include "Constants.hpp"
+#include "entities/Enemy.hpp"
+#include "game/Constants.hpp"
 
 Enemy::Enemy(const sf::Vector2f &position, const sf::Vector2f &size,
              const sf::Texture &walkingTexture) : m_walkingSprite(walkingTexture),

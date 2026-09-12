@@ -5,8 +5,8 @@
 #ifndef SOUNDFUGUE_GAME_HPP
 #define SOUNDFUGUE_GAME_HPP
 #include <SFML/Graphics.hpp>
-#include "World.hpp"
-#include "InputState.hpp"
+#include "game/World.hpp"
+#include "game/InputState.hpp"
 
 class Game {
 public:

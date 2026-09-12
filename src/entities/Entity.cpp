@@ -2,7 +2,7 @@
 // Created by david on 11/4/2025.
 //
 
-#include "Entity.hpp"
+#include "entities/Entity.hpp"
 
 Entity::Entity()
     : m_velocity(0.f, 0.f), m_isMoving(false), m_isAttacking(false),

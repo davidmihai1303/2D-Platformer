@@ -17,7 +17,7 @@
 
 //TODO create a clock for the isOnGround variable in the Player class. The player can now dash while being on ground in between his collision checking
 
-#include "Game.hpp"
+#include "game/Game.hpp"
 
 int main() {
     Game game;
