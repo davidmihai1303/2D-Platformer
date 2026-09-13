@@ -6,6 +6,7 @@ set(MAIN_PROJECT_NAME "SoundFugue")
 set(MAIN_EXECUTABLE_NAME "${MAIN_PROJECT_NAME}")
 
 project(${MAIN_PROJECT_NAME})
+enable_testing()
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,7 +32,7 @@ FetchContent_Declare(
         SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         # renovate: datasource=github-tags depName=SFML/SFML versioning=loose
-        GIT_TAG        3.0.2
+        GIT_TAG        3.1.0
 
         GIT_SHALLOW    1
 )
@@ -89,6 +90,20 @@ elseif(UNIX)
 endif()
 
 ###############################################################################
+# Terrain Collision Library
+###############################################################################
+
+add_library(TerrainCollisionLib STATIC
+        src/terrain/TerrainCollision.cpp
+        src/terrain/TerrainCollision.hpp
+        src/terrain/TerrainContacts.hpp
+        src/terrain/TerrainMove.hpp
+)
+target_include_directories(TerrainCollisionLib PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_link_libraries(TerrainCollisionLib PUBLIC SFML::Graphics)
+set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES TerrainCollisionLib)
+
+###############################################################################
 # Main Executable
 ###############################################################################
 
@@ -115,11 +130,6 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/graphics/TextureHolder.cpp
         src/graphics/TextureHolder.hpp
         src/graphics/MapLayer.hpp
-
-        src/terrain/TerrainCollision.cpp
-        src/terrain/TerrainCollision.hpp
-        src/terrain/TerrainContacts.hpp
-        src/terrain/TerrainMove.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
@@ -143,6 +153,7 @@ target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE
         SFML::System
         Threads::Threads
         tmxlite
+        TerrainCollisionLib
 )
 
 if(APPLE)
@@ -153,11 +164,10 @@ endif()
 # Test configuration
 add_executable(TerrainCollisionTests
         tests/TerrainCollisionTests.cpp
-        src/terrain/TerrainCollision.cpp
 )
-target_include_directories(TerrainCollisionTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_link_libraries(TerrainCollisionTests PRIVATE SFML::Graphics)
+target_link_libraries(TerrainCollisionTests PRIVATE TerrainCollisionLib)
 set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES TerrainCollisionTests)
+add_test(NAME TerrainCollision COMMAND TerrainCollisionTests)
 
 ###############################################################################
 # Installation / Copying
