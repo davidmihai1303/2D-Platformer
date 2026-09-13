@@ -119,6 +119,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         src/terrain/TerrainCollision.cpp
         src/terrain/TerrainCollision.hpp
         src/terrain/TerrainContacts.hpp
+        src/terrain/TerrainMove.hpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
@@ -148,6 +149,15 @@ if(APPLE)
 elseif(UNIX)
     target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE X11)
 endif()
+
+# Test configuration
+add_executable(TerrainCollisionTests
+        tests/TerrainCollisionTests.cpp
+        src/terrain/TerrainCollision.cpp
+)
+target_include_directories(TerrainCollisionTests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_link_libraries(TerrainCollisionTests PRIVATE SFML::Graphics)
+set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES TerrainCollisionTests)
 
 ###############################################################################
 # Installation / Copying
